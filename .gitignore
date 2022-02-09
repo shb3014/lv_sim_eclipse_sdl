@@ -8,3 +8,15 @@ demo
 /.tracecompass
 build/
 bin/
+.pio
+.ini
+CMakeListsPrivate.txt
+cmake-build-*/
+.idea/
+cmake-build-debug-local/
+.vs/
+cmake-build-debug/
+cmake-build-release-remote-host/
+cmake-build-debug-remote-host/
+*.ini
+

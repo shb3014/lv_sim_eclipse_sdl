@@ -1,0 +1,11 @@
+等待手机连接
+接收数据中
+网络连接中
+设备激活中
+
+手机连接成功
+数据接收成功
+网络连接成功
+设备激活成功
+▶
+ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890`~!@#$%^&*()-_+=\|]}[{;:'"/?.>,<°
