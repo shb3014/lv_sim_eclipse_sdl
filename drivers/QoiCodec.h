@@ -24,6 +24,7 @@
 #define QOI_COLOR_HASH(C)   (C.rgba.r*3 + C.rgba.g*5 + C.rgba.b*7 + C.rgba.a*11)
 #define QOI_HEADER_SIZE     14
 #define QOI_BUF_MAX_N       320*8
+#define QOI_FILE_BUF_SIZE   1024 * 1
 
 typedef std::function<void(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t *data)> qoi_decode_cb_t;
 
@@ -81,7 +82,11 @@ private:
 
     bool open_file(const char *filepath);
 
-    void decode(unsigned len);
+    void decode();
+
+    bool read_to_buf();
+
+    uint8_t get_next_pix(unsigned index);
 
     static uint16_t to_rgb565(qoi_rgba_t rgb);
 
@@ -91,9 +96,12 @@ private:
     int m_cb_buf_h = 0;
     unsigned int m_cb_buf_size = 0;
     unsigned m_frame_size = 0;
+    unsigned m_frame_len = 0;
     qoi_decode_cb_t m_decode_cb = nullptr;
     uint8_t *m_file_buf;
     const unsigned char qoi_padding[8] = {0, 0, 0, 0, 0, 0, 0, 1};
+    unsigned current_offset=0;
+    unsigned last_offset=0;
 };
 
 

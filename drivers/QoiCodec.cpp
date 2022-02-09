@@ -9,7 +9,7 @@
 
 QoiCodec::QoiCodec() {
 //    m_file_buf = (uint8_t *) heap_caps_malloc(1024 * 40, MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
-    m_file_buf = (uint8_t *) malloc(1024 * 5);
+    m_file_buf = (uint8_t *) malloc(QOI_FILE_BUF_SIZE);
 }
 
 void QoiCodec::read_header() {
@@ -36,7 +36,7 @@ void QoiCodec::decode_img(const char *filepath, const qoi_decode_cb_t &cb) {
         unsigned size = std::filesystem::file_size(path);
         /* todo smaller ram footprint */
         m_file.read((char *) m_file_buf, size - QOI_HEADER_SIZE);
-        decode(size);
+        decode();
         if (cb) {
             m_decode_cb = cb;
         }
@@ -89,12 +89,40 @@ void QoiCodec::decode_video_routine() {
     unsigned char buf[4];
     int p = 0;
     m_file.read((char *) buf, 4);
-    unsigned frame_size = qoi_read_32(buf, &p);
-    m_file.read((char *) m_file_buf, frame_size);
-    decode(frame_size);
+    m_frame_len = qoi_read_32(buf, &p);
+    log_d("len:%d",m_frame_len);
+//    m_file.read((char *) m_file_buf, content_size);
+    decode();
 }
 
-void QoiCodec::decode(unsigned len) {
+
+bool QoiCodec::read_to_buf() {
+    if (m_frame_len<current_offset){
+        log_e("invalid buf offset");
+        return false;
+    }
+    unsigned read_len = QOI_FILE_BUF_SIZE;
+    if (m_frame_len < current_offset + QOI_FILE_BUF_SIZE) {
+        read_len = m_frame_len - current_offset;
+    }
+    m_file.read((char *) m_file_buf, read_len);
+//    log_d("xxxx %d",current_offset);
+    last_offset = current_offset;
+    current_offset +=read_len;
+    return true;
+}
+
+uint8_t QoiCodec::get_next_pix(unsigned int index) {
+    if (index>=current_offset){
+        if (!read_to_buf()){
+            return 0;
+        }
+    }
+    return m_file_buf[index-last_offset];
+}
+
+
+void QoiCodec::decode() {
     /*
      * 1. read current frame into file buf
      * 2. decode content in ram
@@ -113,29 +141,31 @@ void QoiCodec::decode(unsigned len) {
     px.rgba.b = 0;
     px.rgba.a = 255;
 
-    chunks_len = len - (int) sizeof(qoi_padding);
+    chunks_len = m_frame_len - (int) sizeof(qoi_padding);
 
     int round = 0;
     unsigned buf_p = 0;
     int p = 0;
     bool buf_i = false;
     uint16_t **bufs = get_dma_bufs();
+    current_offset = 0;
 
     for (px_pos = 0; px_pos < m_frame_size; px_pos++) {
         if (run > 0) {
             run--;
         } else if (p < chunks_len) {
-            int b1 = m_file_buf[p++];
+//            int b1 = m_file_buf[p++];
+            int b1 = get_next_pix(p++);
 
             if (b1 == QOI_OP_RGB) {
-                px.rgba.r = m_file_buf[p++];
-                px.rgba.g = m_file_buf[p++];
-                px.rgba.b = m_file_buf[p++];
+                px.rgba.r = get_next_pix(p++);
+                px.rgba.g = get_next_pix(p++);
+                px.rgba.b = get_next_pix(p++);
             } else if (b1 == QOI_OP_RGBA) {
-                px.rgba.r = m_file_buf[p++];
-                px.rgba.g = m_file_buf[p++];
-                px.rgba.b = m_file_buf[p++];
-                px.rgba.a = m_file_buf[p++];
+                px.rgba.r = get_next_pix(p++);
+                px.rgba.g = get_next_pix(p++);
+                px.rgba.b = get_next_pix(p++);
+                px.rgba.a = get_next_pix(p++);
             } else if ((b1 & QOI_MASK_2) == QOI_OP_INDEX) {
                 px = index[b1];
             } else if ((b1 & QOI_MASK_2) == QOI_OP_DIFF) {
@@ -143,7 +173,7 @@ void QoiCodec::decode(unsigned len) {
                 px.rgba.g += ((b1 >> 2) & 0x03) - 2;
                 px.rgba.b += (b1 & 0x03) - 2;
             } else if ((b1 & QOI_MASK_2) == QOI_OP_LUMA) {
-                int b2 = m_file_buf[p++];
+                int b2 = get_next_pix(p++);
                 int vg = (b1 & 0x3f) - 32;
                 px.rgba.r += vg - 8 + ((b2 >> 4) & 0x0f);
                 px.rgba.g += vg;
