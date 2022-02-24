@@ -9,6 +9,7 @@
 #include "vector"
 #include "functional"
 #include "mutex"
+#include "memory"
 #include "iostream"
 #include "fstream"
 
@@ -64,9 +65,9 @@ public:
 
     void decode_img(const char *filepath, const qoi_decode_cb_t &cb = nullptr);
 
-    void decode_video(const char *filepath, const qoi_decode_cb_t &cb = nullptr);
+    bool decode_video(const char *filepath, const qoi_decode_cb_t &cb = nullptr);
 
-    void decode_video_routine();
+    bool decode_video_routine();
 
     qoi_desc &get_current_desc(){
         return m_current_desc;

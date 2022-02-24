@@ -63,7 +63,7 @@ bool QoiCodec::open_file(const char *filepath) {
     return m_file.is_open();
 }
 
-void QoiCodec::decode_video(const char *filepath, const qoi_decode_cb_t &cb) {
+bool QoiCodec::decode_video(const char *filepath, const qoi_decode_cb_t &cb) {
     if (open_file(filepath)) {
         if (cb) {
             m_decode_cb = cb;
@@ -75,10 +75,12 @@ void QoiCodec::decode_video(const char *filepath, const qoi_decode_cb_t &cb) {
 //                IvyAnim::instance().Tft.pushImageDMA(x + x_offset, y + y_offset, w, h, data);
 //            };
 //        }
+        return true;
     }
+    return false;
 }
 
-void QoiCodec::decode_video_routine() {
+bool QoiCodec::decode_video_routine() {
 //    if (!m_file) {
 //        return;
 //    }
@@ -93,6 +95,7 @@ void QoiCodec::decode_video_routine() {
     log_d("len:%d",m_frame_len);
 //    m_file.read((char *) m_file_buf, content_size);
     decode();
+    return true;
 }
 
 

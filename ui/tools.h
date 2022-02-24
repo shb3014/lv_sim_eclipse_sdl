@@ -9,8 +9,10 @@
 #include "string"
 #include "utils/log.h"
 
-#define PATH_ASSETS "C:/Users/sungaoran/Desktop/wsl/video/assets/"
+//#define PATH_ASSETS "C:/Users/sungaoran/Desktop/wsl/video/assets/"
+#define PATH_ASSETS "C:/Users/Gordon/Desktop/EmbededProjects/lv_sim_eclipse_sdl/assets"
 
+//region animation
 std::string get_asset_path(std::string &asset_name);
 
 void anim_canvas_reset_asset();
@@ -51,5 +53,21 @@ void anim_fade(void *var, int32_t value);
 void anim_move_ver(void *var, int32_t value);
 
 void anim_move_hor(void *var, int32_t value);
+//endregion
+
+//region style
+/**
+ * default style for bar background
+ * @return
+ */
+lv_style_t bar_get_default_style_bg();
+
+/**
+ * default style for bar indicator
+ * @return
+ */
+lv_style_t bar_get_default_style_indic();
+//endregion
+
 
 #endif //UI_SANDBOX_TOOLS_H

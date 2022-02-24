@@ -27,6 +27,8 @@
 #include "ui/UIWeather.h"
 #include "ui/UITime.h"
 #include "ui/UIDate.h"
+#include "ui/UIProgress.h"
+#include "ui/UIDoubleProgress.h"
 #include "utils/log.h"
 #include "lv_conf.h"
 #include "chrono"
@@ -107,11 +109,16 @@ int main(int argc, char **argv) {
 //  lv_example_label_1();
 //    UIWeather ui;
     UITime ui;
+//    UIProgress ui;
+//    UIDoubleProgress ui;
 //    UIDate ui;
     ui.show();
 //    lv_demo_widgets();
     lv_scr_load(lv_scr_act());
     log_i("main start");
+
+//    ui.update("Progress Test","upgrading",30);
+//    ui.update("Evolving","downloading /assets/test.txt",30,"total",10);
 
     while (1) {
         auto start = std::chrono::steady_clock::now();
