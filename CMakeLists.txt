@@ -14,7 +14,7 @@ SET(CMAKE_CXX_FLAGS "-O3")
 
 find_package(SDL2 REQUIRED SDL2)
 include_directories(${SDL2_INCLUDE_DIRS})
-add_executable(main main.cpp mouse_cursor_icon.c ${SOURCES} ${INCLUDES} ui/UITime.cpp ui/UITime.h ui/UIDate.cpp ui/UIDate.h ui/UIDoubleProgress.cpp ui/UIDoubleProgress.h)
+add_executable(main main.cpp mouse_cursor_icon.c ${SOURCES} ${INCLUDES} ui/UITime.cpp ui/UITime.h ui/UIDate.cpp ui/UIDate.h ui/UIDoubleProgress.cpp ui/UIDoubleProgress.h ui/UIActionBox.cpp ui/UIActionBox.h)
 add_compile_definitions(LV_CONF_INCLUDE_SIMPLE)
 target_link_libraries(main PRIVATE SDL2 )
 add_custom_target (run COMMAND ${EXECUTABLE_OUTPUT_PATH}/main)
