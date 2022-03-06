@@ -44,6 +44,7 @@ anim_create(lv_obj_t *obj, lv_anim_exec_xcb_t exec_cb, int value_start, int valu
             uint32_t playback_delay = 0,
             lv_anim_ready_cb_t ready_cb = nullptr,
             void *user_data = nullptr,
+            int repeat_cnt = 0,
             lv_anim_path_cb_t path = lv_anim_path_ease_out);
 
 void anim_entrance();

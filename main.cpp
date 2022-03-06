@@ -29,6 +29,7 @@
 #include "ui/UIDate.h"
 #include "ui/UIProgress.h"
 #include "ui/UIDoubleProgress.h"
+#include "ui/UIActionBox.h"
 #include "utils/log.h"
 #include "lv_conf.h"
 #include "chrono"
@@ -108,11 +109,14 @@ int main(int argc, char **argv) {
 //  lv_example_flex_3();
 //  lv_example_label_1();
 //    UIWeather ui;
-    UITime ui;
+//    UITime ui;
 //    UIProgress ui;
 //    UIDoubleProgress ui;
 //    UIDate ui;
+    UIActionBox ui;
     ui.show();
+    ui.update("Evolve", "Ivy is able to evolve, do you want to update now?", "Yes", "No", []() { log_d("left set"); },
+              []() { log_d("right set"); },60);
 //    lv_demo_widgets();
     lv_scr_load(lv_scr_act());
     log_i("main start");
@@ -127,10 +131,10 @@ int main(int argc, char **argv) {
         ui.routine();
         lv_timer_handler();
         auto end = std::chrono::steady_clock::now();
-        uint32_t frame_t = std::chrono::duration_cast<std::chrono::milliseconds>(end-start).count();
+        uint32_t frame_t = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
         uint32_t target_t = 1;
-        if (frame_t<41.6){
-            target_t = 41.6-frame_t;
+        if (frame_t < 41.6) {
+            target_t = 41.6 - frame_t;
         }
         usleep(target_t * 1000);
     }

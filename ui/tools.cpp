@@ -7,10 +7,20 @@
 #include "drivers/common.h"
 
 
-static void decode_to_canvas_cb(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t *data) {
-    /* assume x===0 */
-    int ptr = w * y;
-    memcpy(get_canvas_buf() + ptr, data, w * h * sizeof(uint16_t));
+static void decode_to_canvas_cb(uint16_t
+x,
+uint16_t y, uint16_t
+w,
+uint16_t h, uint16_t
+*data) {
+/* assume x===0 */
+int ptr = w * y;
+
+memcpy (get_canvas_buf()
+
++ ptr, data,
+w *h
+* sizeof(uint16_t));
 }
 
 std::string current_asset;
@@ -53,7 +63,7 @@ std::string get_asset_path(std::string &asset_name) {
 lv_anim_t
 anim_create(lv_obj_t *obj, lv_anim_exec_xcb_t exec_cb, int value_start, int value_end, uint32_t time, uint32_t delay,
             uint32_t playback_time, uint32_t playback_delay,
-            lv_anim_ready_cb_t ready_cb, void *user_data, lv_anim_path_cb_t path) {
+            lv_anim_ready_cb_t ready_cb, void *user_data, int repeat_cnt, lv_anim_path_cb_t path) {
     lv_anim_t a;
     lv_anim_init(&a);
     lv_anim_set_var(&a, obj);
@@ -70,6 +80,7 @@ anim_create(lv_obj_t *obj, lv_anim_exec_xcb_t exec_cb, int value_start, int valu
     lv_anim_set_path_cb(&a, path);
     lv_anim_set_ready_cb(&a, ready_cb);
     lv_anim_set_user_data(&a, user_data);
+    lv_anim_set_repeat_count(&a, repeat_cnt);
     return a;
 }
 
