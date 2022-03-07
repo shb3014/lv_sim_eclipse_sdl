@@ -30,6 +30,7 @@
 #include "ui/UIProgress.h"
 #include "ui/UIDoubleProgress.h"
 #include "ui/UIActionBox.h"
+#include "ui/UILoading.h"
 #include "utils/log.h"
 #include "lv_conf.h"
 #include "chrono"
@@ -113,10 +114,12 @@ int main(int argc, char **argv) {
 //    UIProgress ui;
 //    UIDoubleProgress ui;
 //    UIDate ui;
-    UIActionBox ui;
+//    UIActionBox ui;
+//    ui.update("Evolve", "Ivy is able to evolve, do you want to update now?", "Yes", "No", []() { log_d("left set"); },
+//              []() { log_d("right set"); },60);
+    UILoading ui;
     ui.show();
-    ui.update("Evolve", "Ivy is able to evolve, do you want to update now?", "Yes", "No", []() { log_d("left set"); },
-              []() { log_d("right set"); },60);
+    ui.update("Checking Updates","requesting from plantsio server");
 //    lv_demo_widgets();
     lv_scr_load(lv_scr_act());
     log_i("main start");
@@ -132,11 +135,11 @@ int main(int argc, char **argv) {
         lv_timer_handler();
         auto end = std::chrono::steady_clock::now();
         uint32_t frame_t = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
-        uint32_t target_t = 1;
-        if (frame_t < 41.6) {
-            target_t = 41.6 - frame_t;
+        double target_t = 1;
+        if ((double)frame_t < 41.6) {
+            target_t = 41.6 - (double)frame_t;
         }
-        usleep(target_t * 1000);
+        usleep((int)(target_t * 1000));
     }
 
     return 0;
