@@ -127,7 +127,7 @@ int main(int argc, char **argv) {
 //    ui.update("Progress Test","upgrading",30);
 //    ui.update("Evolving","downloading /assets/test.txt",30,"total",10);
 
-    while (1) {
+    while (true) {
         auto start = std::chrono::steady_clock::now();
         /* Periodically call the lv_task handler.
          * It could be done in a timer interrupt or an OS task too.*/
