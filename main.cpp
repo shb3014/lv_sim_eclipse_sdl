@@ -109,7 +109,7 @@ int main(int argc, char **argv) {
 //  lv_example_tabview_1();
 //  lv_example_flex_3();
 //  lv_example_label_1();
-//    UIWeather ui;
+    UIWeather ui;
 //    UITime ui;
 //    UIProgress ui;
 //    UIDoubleProgress ui;
@@ -117,9 +117,9 @@ int main(int argc, char **argv) {
 //    UIActionBox ui;
 //    ui.update("Evolve", "Ivy is able to evolve, do you want to update now?", "Yes", "No", []() { log_d("left set"); },
 //              []() { log_d("right set"); },60);
-    UILoading ui;
+//    UILoading ui;
     ui.show();
-    ui.update("Checking Updates","requesting from plantsio server");
+//    ui.update("Checking Updates","requesting from plantsio server");
 //    lv_demo_widgets();
     lv_scr_load(lv_scr_act());
     log_i("main start");

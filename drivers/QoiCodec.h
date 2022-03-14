@@ -23,18 +23,19 @@
 #define QOI_MASK_2          0xc0 /* 11000000 */
 
 #define QOI_COLOR_HASH(C)   (C.rgba.r*3 + C.rgba.g*5 + C.rgba.b*7 + C.rgba.a*11)
+#define QOI_COLOR_HASH_565(C) (C.r*3 + C.g*5 + C.b*7)
 #define QOI_HEADER_SIZE     14
+#define MQOI_HEADER_SIZE    4
 #define QOI_BUF_MAX_N       320*8
 #define QOI_FILE_BUF_SIZE   1024 * 1
 
 typedef std::function<void(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t *data)> qoi_decode_cb_t;
 
+
 typedef struct {
-    unsigned int width;
-    unsigned int height;
-    unsigned char channels;
-    unsigned char colorspace;
-} qoi_desc;
+    uint16_t width;
+    uint16_t height;
+} mqoi_desc;
 
 typedef union {
     struct {
@@ -42,6 +43,19 @@ typedef union {
     } rgba;
     unsigned int v;
 } qoi_rgba_t;
+
+typedef union {
+    struct {
+        uint16_t r: 5;
+        uint16_t g: 6;
+        uint16_t b: 5;
+    };
+    struct {
+        uint16_t msb: 8;
+        uint16_t lsb: 8;
+    };
+    uint16_t full;
+} rgb565_t;
 
 class QoiCodec {
 public:
@@ -69,7 +83,7 @@ public:
 
     bool decode_video_routine();
 
-    qoi_desc &get_current_desc(){
+    mqoi_desc &get_current_desc(){
         return m_current_desc;
     }
 
@@ -77,6 +91,7 @@ private:
     void read_header();
 
     static unsigned int qoi_read_32(const unsigned char *bytes, int *p);
+    static uint16_t qoi_read_16(const unsigned char *bytes, int *p);
 
     static void qoi_write_32(unsigned char *bytes, int *p, unsigned int v);
 
@@ -84,6 +99,7 @@ private:
     bool open_file(const char *filepath);
 
     void decode();
+    void mqoi_decode();
 
     bool read_to_buf();
 
@@ -92,7 +108,7 @@ private:
     static uint16_t to_rgb565(qoi_rgba_t rgb);
 
     std::mutex qoi_mutex;
-    qoi_desc m_current_desc;
+    mqoi_desc m_current_desc;
     std::ifstream m_file;
     int m_cb_buf_h = 0;
     unsigned int m_cb_buf_size = 0;
@@ -100,7 +116,6 @@ private:
     unsigned m_frame_len = 0;
     qoi_decode_cb_t m_decode_cb = nullptr;
     uint8_t *m_file_buf;
-    const unsigned char qoi_padding[8] = {0, 0, 0, 0, 0, 0, 0, 1};
     unsigned current_offset=0;
     unsigned last_offset=0;
 };

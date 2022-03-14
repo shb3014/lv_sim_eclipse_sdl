@@ -9,8 +9,8 @@
 #include "string"
 #include "utils/log.h"
 
-//#define PATH_ASSETS "C:/Users/sungaoran/Desktop/wsl/video/assets/"
-#define PATH_ASSETS "C:/Users/Gordon/Desktop/EmbededProjects/lv_sim_eclipse_sdl/assets"
+#define PATH_ASSETS "C:/Users/sungaoran/Desktop/wsl/video/assets"
+//#define PATH_ASSETS "C:/Users/Gordon/Desktop/EmbededProjects/lv_sim_eclipse_sdl/assets"
 
 //region animation
 std::string get_asset_path(std::string &asset_name);
