@@ -31,6 +31,7 @@
 #include "ui/UIDoubleProgress.h"
 #include "ui/UIActionBox.h"
 #include "ui/UILoading.h"
+#include "ui/UIQrCode.h"
 #include "utils/log.h"
 #include "lv_conf.h"
 #include "chrono"
@@ -109,7 +110,8 @@ int main(int argc, char **argv) {
 //  lv_example_tabview_1();
 //  lv_example_flex_3();
 //  lv_example_label_1();
-    UIWeather ui;
+//    UIWeather ui;
+    UIQrCode ui;
 //    UITime ui;
 //    UIProgress ui;
 //    UIDoubleProgress ui;
@@ -119,6 +121,10 @@ int main(int argc, char **argv) {
 //              []() { log_d("right set"); },60);
 //    UILoading ui;
     ui.show();
+//    ui.update_qr("https://smartapp.tuya.com/s/p?p=9sq9uydcv0aggmh5&uuid=6caca3de5cc488ef943wlm&v=2.0");
+//    ui.update_desc("Scan with #DB0000 Tuya# to activate");
+    ui.update_qr("ver: v1, name: ivy1231241, pop: 123141, transport: softap");
+    ui.update_desc("Scan with #DB0000 ESP32 SoftAP# to provision");
 //    ui.update("Checking Updates","requesting from plantsio server");
 //    lv_demo_widgets();
     lv_scr_load(lv_scr_act());
