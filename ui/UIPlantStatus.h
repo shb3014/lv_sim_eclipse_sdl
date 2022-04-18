@@ -6,6 +6,7 @@
 #define LVGL_UIPLANTSTATUS_H
 
 #include "UIBase.h"
+#include "vector"
 
 class StatusCard {
 public:
@@ -18,6 +19,36 @@ private:
     lv_obj_t *m_value_label;
     lv_obj_t *m_name_label;
     lv_obj_t *m_unit_label;
+};
+
+class BubblePointer {
+public:
+    BubblePointer(lv_obj_t *parent, int16_t pointer_w, int16_t pointer_h);
+
+    void update(lv_color_t color = lv_color_white());
+
+    lv_obj_t *body;
+
+private:
+    lv_obj_t *line_left;
+    lv_obj_t *line_right;
+    lv_obj_t *line_bottom;
+    std::vector<lv_point_t> left_points;
+    std::vector<lv_point_t> right_points;
+    std::vector<lv_point_t> bottom_points;
+};
+
+class ChatBubble {
+public:
+    ChatBubble(lv_obj_t *parent, int16_t bubble_w, int16_t bubble_h, int16_t pointer_w, int16_t pointer_h, lv_color_t color = lv_color_white());
+
+    void update_pointer_location(int x);
+
+private:
+    BubblePointer m_pointer;
+    lv_color_t m_color;
+    lv_obj_t *m_card;
+    lv_obj_t *m_label;
 };
 
 class UIPlantStatus : public UIBase {
@@ -35,6 +66,7 @@ private:
     StatusCard card_water;
     StatusCard card_battery;
     StatusCard card_light;
+    ChatBubble bubble;
 //    lv_obj_t *message_label;
 };
 
