@@ -7,13 +7,15 @@
 
 #include "UIBase.h"
 
-class UILoading : public UIBase{
+class UILoading : public UIBase {
 public:
-    void show() override;
+    UILoading();
 
-    void update(const char *title, const char* desc);
+    UI_index get_index() override {
+        return UI_LOADING;
+    }
 
-    void clear() override;
+    void update(const char *title, const char *desc);
 
 private:
     lv_obj_t *m_title_label;

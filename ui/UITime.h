@@ -5,14 +5,19 @@
 #ifndef LVGL_UITIME_H
 #define LVGL_UITIME_H
 
+#include <ctime>
 #include "UIBase.h"
 class UITime  :public UIBase{
 public:
-    void show() override;
+    UITime();
+    UI_index get_index() override{
+        return UI_TIME;
+    }
+    void start_routine() override;
 
     void routine() override;
 
-    void update_info(const char *time, const char* day, const char* date, const char* weather);
+    void update_info(bool force=false);
 
 private:
     lv_obj_t *weather_anim;
@@ -21,7 +26,9 @@ private:
     lv_obj_t *date_label;
     lv_obj_t *sep_line;
     lv_point_t sep_line_points[2] = {{0, 0},
-                                       {0, 80}};
+                                     {0, 80}};
+
+    tm last_tm{};
 };
 
 

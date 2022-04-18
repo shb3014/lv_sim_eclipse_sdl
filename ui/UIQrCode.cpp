@@ -4,12 +4,11 @@
 
 #include "UIQrCode.h"
 #include "tool/qrcodegen.hpp"
-
 #include "drivers/common.h" /* fixme */
-#include "tools.h" /* fixme */
+#include "tools.h"
 
-void UIQrCode::show() {
-    qr_rect = lv_obj_create(lv_scr_act());
+UIQrCode::UIQrCode() : UIBase() {
+    qr_rect = lv_obj_create(m_scr);
     lv_obj_set_style_bg_color(qr_rect, lv_color_white(), 0);
     lv_obj_set_size(qr_rect, QR_CODE_MAX_LEN, QR_CODE_MAX_LEN);
     lv_obj_align(qr_rect, LV_ALIGN_CENTER, 0, -QR_CODE_Y_OFFSET);
@@ -18,21 +17,24 @@ void UIQrCode::show() {
 
     qr_canvas = lv_canvas_create(qr_rect);
     lv_obj_align(qr_canvas, LV_ALIGN_CENTER, 0, 0);
-    lv_canvas_set_buffer(qr_canvas, get_canvas_buf(), QR_CODE_MAX_LEN, QR_CODE_MAX_LEN, LV_IMG_CF_TRUE_COLOR);
+    lv_canvas_set_buffer(qr_canvas, get_canvas_buf(), QR_CODE_MAX_LEN, QR_CODE_MAX_LEN,
+                         LV_IMG_CF_TRUE_COLOR);
 
-    desc_label = lv_label_create(lv_scr_act());
+    desc_label = lv_label_create(m_scr);
     lv_obj_align_to(desc_label, qr_rect, LV_ALIGN_OUT_BOTTOM_MID, 0, 8);
     lv_obj_set_style_text_font(desc_label, &ba_16, 0);
     lv_obj_set_style_text_align(desc_label, LV_TEXT_ALIGN_CENTER, 0);
     lv_obj_set_style_text_color(desc_label, lv_color_white(), 0);
     lv_obj_set_width(desc_label, 300);
-    lv_label_set_recolor(desc_label,true);
+    lv_label_set_recolor(desc_label, true);
+}
 
-    lv_anim_t anim = anim_create(desc_label, anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, 2000, 0, 2500, 1200,
+void UIQrCode::start_routine() {
+
+    lv_anim_t anim = anim_create(desc_label, anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, 500, 0, 1200, 1800,
                                  nullptr, nullptr, LV_ANIM_REPEAT_INFINITE);
     lv_anim_start(&anim);
-
-    UIBase::show();
+    UIBase::start_routine();
 }
 
 using qrcodegen::QrCode;
@@ -51,7 +53,7 @@ void UIQrCode::update_qr(const char *qr_content) {
     lv_obj_set_size(qr_rect, side + QR_CODE_MARGIN_IN, side + QR_CODE_MARGIN_IN);
     lv_obj_align(qr_rect, LV_ALIGN_CENTER, 0, -QR_CODE_Y_OFFSET);
 
-    lv_canvas_set_buffer(qr_canvas, get_canvas_buf(), side, side, LV_IMG_CF_TRUE_COLOR);
+    lv_canvas_set_buffer(qr_canvas,get_canvas_buf(), side, side, LV_IMG_CF_TRUE_COLOR);
     lv_obj_align(qr_canvas, LV_ALIGN_CENTER, 0, 0);
 
     lv_draw_rect_dsc_t rect_dsc;
@@ -71,4 +73,9 @@ void UIQrCode::update_qr(const char *qr_content) {
             }
         }
     }
+}
+
+void UIQrCode::clear() {
+    lv_anim_del_all();
+    UIBase::clear();
 }

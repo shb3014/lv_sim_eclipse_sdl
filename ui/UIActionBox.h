@@ -10,14 +10,35 @@
 
 typedef std::function<void()> action_cb_t;
 
+typedef enum {
+    ACTION_WAITING = 0,
+    ACTION_APPLY = 1,
+    ACTION_CANCEL = 2,
+    ACTION_OVER = 2,
+} action_t;
+
 class UIActionBox : public UIBase {
 public:
-    void show() override;
+    UIActionBox();
 
-    void update(const char *title, const char* desc, const char *left, const char *right, action_cb_t left_cb = nullptr,
-                action_cb_t right_cb = nullptr, int counting_max=0);
+    void start_routine() override;
 
-    void routine();
+    UI_index get_index() override{
+        return UI_ACTION;
+    }
+
+    void update(const char *title, const char *desc, const char *left, const char *right, action_cb_t left_cb = nullptr,
+                action_cb_t right_cb = nullptr, int counting_max = 0);
+
+    void routine() override;
+
+    void set_action(action_t action) {
+        m_action = action;
+    }
+
+    void input_cb(UI_INPUT input) override;
+
+    void clear() override;
 
 private:
     lv_obj_t *m_title_label;
@@ -31,8 +52,9 @@ private:
     action_cb_t m_left_cb;
     action_cb_t m_right_cb;
 
-    int m_counting_max = 0;
-    int m_counting_t =0;
+    uint32_t m_counting_timeout_t = 0;
+    uint32_t m_counting_max = 60;
+    action_t m_action = ACTION_WAITING;
 };
 
 

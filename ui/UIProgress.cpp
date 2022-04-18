@@ -4,13 +4,25 @@
 
 #include "UIProgress.h"
 #include "string"
-#include "tools.h"
 
-void UIProgress::show() {
-    style_bg = bar_get_default_style_bg();
-    style_indic = bar_get_default_style_indic();
 
-    m_bar = lv_bar_create(lv_scr_act());
+UIProgress::UIProgress() : UIBase() {
+    static lv_style_t style_bg;
+    static lv_style_t style_indic;
+
+    lv_style_init(&style_bg);
+    lv_style_set_border_color(&style_bg, lv_palette_main(LV_PALETTE_GREEN));
+    lv_style_set_border_width(&style_bg, 2);
+    lv_style_set_pad_all(&style_bg, 6); /*To make the indicator smaller*/
+    lv_style_set_radius(&style_bg, 6);
+    lv_style_set_anim_time(&style_bg, 1000);
+
+    lv_style_init(&style_indic);
+    lv_style_set_bg_opa(&style_indic, LV_OPA_COVER);
+    lv_style_set_bg_color(&style_indic, lv_palette_main(LV_PALETTE_GREEN));
+    lv_style_set_radius(&style_indic, 3);
+
+    m_bar = lv_bar_create(m_scr);
     lv_obj_remove_style_all(m_bar);  /*To have a clean start*/
     lv_obj_add_style(m_bar, &style_bg, 0);
     lv_obj_add_style(m_bar, &style_indic, LV_PART_INDICATOR);
@@ -18,20 +30,17 @@ void UIProgress::show() {
     lv_obj_set_size(m_bar, 200, 20);
     lv_obj_center(m_bar);
 
-    m_title_label = lv_label_create(lv_scr_act());
+    m_title_label = lv_label_create(m_scr);
     lv_obj_set_style_text_font(m_title_label, &ba_30, 0);
-    lv_obj_set_style_text_color(m_title_label,lv_color_white(),0);
+    lv_obj_set_style_text_color(m_title_label, lv_color_white(), 0);
     lv_obj_set_style_text_align(m_title_label, LV_TEXT_ALIGN_CENTER, 0);
     lv_obj_align_to(m_title_label, m_bar, LV_ALIGN_OUT_TOP_MID, 0, -10);
 
-    m_status_label = lv_label_create(lv_scr_act());
+    m_status_label = lv_label_create(m_scr);
     lv_obj_set_style_text_font(m_status_label, &ba_16, 0);
     lv_obj_set_style_text_color(m_status_label, lv_color_white(), 0);
     lv_obj_set_style_text_align(m_status_label, LV_TEXT_ALIGN_CENTER, 0);
     lv_obj_align_to(m_status_label, m_bar, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
-
-//    lv_bar_set_value(m_bar, 100, LV_ANIM_ON);
-    UIBase::show();
 }
 
 void UIProgress::set_title(const char *value) {

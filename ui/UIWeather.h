@@ -6,14 +6,18 @@
 #define UI_SANDBOX_UIWEATHER_H
 
 #include "UIBase.h"
+//#include "tool/sys.h"
 
-class UIWeather : public UIBase {
+class UIWeather :public UIBase{
 public:
-    void show() override;
+    UIWeather();
+    UI_index get_index() override{
+        return UI_WEATHER;
+    }
 
     void routine() override;
 
-    void update_info(const char *weather, const char *asset_name, int current_degree, int degree_min, int degree_max);
+    void update_info(const char* weather,const char* file_path,int current_degree, int degree_min, int degree_max);
 
 private:
     lv_obj_t *weather_anim;

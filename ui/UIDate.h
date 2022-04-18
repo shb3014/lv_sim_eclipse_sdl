@@ -9,11 +9,19 @@
 
 class UIDate : public UIBase {
 public:
-    void show() override;
+    UIDate();
+
+    void start_routine() override;
+
+    UI_index get_index() override{
+        return UI_DATE;
+    }
 
     void calendar_show_cb();
 
     void label_hide_cb();
+
+    void clear() override;
 
 private:
     lv_obj_t *calendar;
@@ -22,7 +30,7 @@ private:
     lv_obj_t *line;
     lv_point_t line_points[2] = {{0,   0},
                                  {260, 0}};
-    lv_timer_t *timer;
+    lv_timer_t *timer = nullptr;
 };
 
 

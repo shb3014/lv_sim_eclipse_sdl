@@ -32,6 +32,7 @@
 #include "ui/UIActionBox.h"
 #include "ui/UILoading.h"
 #include "ui/UIQrCode.h"
+#include "ui/UIPlantStatus.h"
 #include "utils/log.h"
 #include "lv_conf.h"
 #include "chrono"
@@ -119,13 +120,14 @@ int main(int argc, char **argv) {
 //    UIActionBox ui;
 //    ui.update("Evolve", "Ivy is able to evolve, do you want to update now?", "Yes", "No", []() { log_d("left set"); },
 //              []() { log_d("right set"); },60);
-    UILoading ui;
-    ui.show();
+//    UILoading ui;
+    UIPlantStatus ui;
+    ui.set_start(true);
 //    ui.update_qr("https://smartapp.tuya.com/s/p?p=9sq9uydcv0aggmh5&uuid=6caca3de5cc488ef943wlm&v=2.0");
 //    ui.update_desc("Scan with #DB0000 Tuya# to activate");
 //    ui.update_qr("ver: v1, name: ivy1231241, pop: 123141, transport: softap");
 //    ui.update_desc("Scan with #DB0000 ESP32 SoftAP# to provision");
-    ui.update("Checking Updates","requesting from plantsio server");
+//    ui.update("Checking Updates", "requesting from plantsio server");
 //    lv_demo_widgets();
     lv_scr_load(lv_scr_act());
     log_i("main start");
@@ -142,10 +144,10 @@ int main(int argc, char **argv) {
         auto end = std::chrono::steady_clock::now();
         uint32_t frame_t = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
         double target_t = 1;
-        if ((double)frame_t < 41.6) {
-            target_t = 41.6 - (double)frame_t;
+        if ((double) frame_t < 41.6) {
+            target_t = 41.6 - (double) frame_t;
         }
-        usleep((int)(target_t * 1000));
+        usleep((int) (target_t * 1000));
     }
 
     return 0;
