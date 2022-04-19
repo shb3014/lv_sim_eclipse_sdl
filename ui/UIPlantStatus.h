@@ -7,6 +7,13 @@
 
 #include "UIBase.h"
 #include "vector"
+#include "string"
+
+#define BUBBLE_HEIGHT       90
+#define BUBBLE_POINTER_H    10
+#define DEFAULT_PADDING     6
+#define DEFAULT_CARD_H      (240-3*DEFAULT_PADDING)/2
+#define DEFAULT_CARD_W      (320-4*DEFAULT_PADDING)/3
 
 class StatusCard {
 public:
@@ -46,7 +53,7 @@ class ChatBubble {
 public:
     ChatBubble(lv_obj_t *parent, lv_coord_t bubble_w, lv_coord_t bubble_h, lv_coord_t pointer_w, lv_coord_t pointer_h);
 
-    void update_pointer_location(int x);
+    void update_pointer_location(int x, bool up);
 
     void update_color(lv_color_t color);
 
@@ -70,13 +77,22 @@ public:
         return UI_PLANT_STATUS;
     }
 
-    void update_bubble_status(const char *content, lv_color_t color, lv_coord_t x, bool show);
+    void update_bubble_status(const char *content, lv_color_t color, lv_coord_t x, bool up, bool show);
 
     void hide_bubble_cb();
 
     void routine() override;
 
+    void select_index(int index);
+
+    void select_next();
+
+    std::string get_content_by_index(int index);
+
+    lv_color_t get_color_by_index(int index);
+
 private:
+    static lv_coord_t get_pointer_x_by_index(int index);
 //    lv_coord_t col_dsc[4] = {100, 100, 100, LV_GRID_TEMPLATE_LAST};
 //    lv_coord_t row_dsc[4] = {110, 110, 110, LV_GRID_TEMPLATE_LAST};
     lv_obj_t *top_area;
@@ -89,6 +105,8 @@ private:
     StatusCard card_battery;
     StatusCard card_light;
 
+    bool focus_top = true;
+    int current_index = -1;
 };
 
 
