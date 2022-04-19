@@ -259,7 +259,6 @@ void UIPlantStatus::select_index(int index) {
     if (index == current_index) {
         return;
     }
-    printf("select index: %d", index);
     if (index == -1) {
         update_bubble_status("", lv_color_white(), 0, false, false);
     } else {
@@ -286,11 +285,11 @@ void UIPlantStatus::select_next() {
 lv_coord_t UIPlantStatus::get_pointer_x_by_index(int index) {
     int seq = index % 3;
     if (seq == 0) {
-        return DEFAULT_CARD_W / 2;
+        return (DEFAULT_CARD_W-BUBBLE_WIDTH) / 2;
     } else if (seq == 1) {
-        return 320 - DEFAULT_PADDING * 2 / 2;
+        return (320 - DEFAULT_PADDING * 2-BUBBLE_WIDTH) / 2;
     } else {
-        return 320 - DEFAULT_CARD_W / 2;
+        return 320 - DEFAULT_PADDING * 2 - (DEFAULT_CARD_W+BUBBLE_WIDTH) / 2;
     }
 }
 

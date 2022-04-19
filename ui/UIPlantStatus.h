@@ -10,6 +10,7 @@
 #include "string"
 
 #define BUBBLE_HEIGHT       90
+#define BUBBLE_WIDTH        20
 #define BUBBLE_POINTER_H    10
 #define DEFAULT_PADDING     6
 #define DEFAULT_CARD_H      (240-3*DEFAULT_PADDING)/2
