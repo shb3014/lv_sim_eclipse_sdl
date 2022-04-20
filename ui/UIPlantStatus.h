@@ -13,8 +13,8 @@ namespace UI {
 #define BUBBLE_WIDTH        20
 #define BUBBLE_POINTER_H    10
 #define DEFAULT_PADDING     6
-#define DEFAULT_CARD_H      (240-3*DEFAULT_PADDING)/2
-#define DEFAULT_CARD_W      (320-4*DEFAULT_PADDING)/3
+#define DEFAULT_CARD_H      ((240-3*DEFAULT_PADDING)/2)
+#define DEFAULT_CARD_W      ((320-4*DEFAULT_PADDING)/3)
 
     class StatusCard {
     public:
@@ -82,6 +82,8 @@ namespace UI {
         void update_bubble_status(const char *content, lv_color_t color, lv_coord_t x, bool up, bool show);
 
         void hide_bubble_cb();
+
+        void hide_bubble_scroll_cb();
 
         void routine() override;
 

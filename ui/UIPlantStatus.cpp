@@ -4,13 +4,14 @@
 
 #include "UIPlantStatus.h"
 #include "tools.h"
+
 namespace UI {
     StatusCard::StatusCard(lv_obj_t *parent, const char *name, const char *unit) {
         m_card = lv_obj_create(parent);
         lv_obj_set_size(m_card, DEFAULT_CARD_W, DEFAULT_CARD_H);
         lv_obj_set_style_bg_opa(m_card, LV_OPA_TRANSP, 0);
         lv_obj_clear_flag(m_card, LV_OBJ_FLAG_SCROLLABLE);
-        lv_obj_set_style_radius(m_card, 15, 0);
+        lv_obj_set_style_radius(m_card, 30, 0);
 
         m_value_label = lv_label_create(m_card);
         update_value_label("90");
@@ -44,7 +45,7 @@ namespace UI {
         lv_obj_set_size(m_space, bubble_w, bubble_h + pointer_h * 2);
 
         m_card = lv_obj_create(m_space);
-//    lv_obj_set_style_radius(m_card,10,0);
+        lv_obj_set_style_radius(m_card, 20, 0);
         lv_obj_set_style_bg_opa(m_card, LV_OPA_TRANSP, 0);
         lv_obj_set_size(m_card, bubble_w, bubble_h);
         lv_obj_align(m_card, LV_ALIGN_CENTER, 0, 0);
@@ -144,8 +145,10 @@ namespace UI {
 
         lv_obj_remove_style_all(top_area);
         lv_obj_remove_style_all(bottom_area);
-        lv_obj_set_size(top_area, 320, DEFAULT_CARD_H);
-        lv_obj_set_size(bottom_area, 320, DEFAULT_CARD_H);
+        lv_obj_clear_flag(top_area, LV_OBJ_FLAG_SCROLLABLE);
+        lv_obj_clear_flag(bottom_area, LV_OBJ_FLAG_SCROLLABLE);
+        lv_obj_set_size(top_area, 310, DEFAULT_CARD_H);
+        lv_obj_set_size(bottom_area, 310, DEFAULT_CARD_H);
 
         lv_obj_set_flex_flow(top_area, LV_FLEX_FLOW_ROW);
         lv_obj_set_flex_align(top_area, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
@@ -170,13 +173,23 @@ namespace UI {
         lv_anim_start(&a);
     }
 
+    void UIPlantStatus::hide_bubble_scroll_cb() {
+        lv_obj_scroll_to_y(m_scr, lv_obj_get_y(top_area) - DEFAULT_PADDING, LV_ANIM_ON);
+    }
+
+
+    static void _hide_bubble_scroll_cb(struct _lv_anim_t *anim) {
+        auto *ui = static_cast<UIPlantStatus *>(anim->user_data);
+        ui->hide_bubble_scroll_cb();
+    }
+
     void UIPlantStatus::hide_bubble_cb() {
         bubble.set_visible(false);
+        lv_obj_scroll_to_y(m_scr, lv_obj_get_y(top_area) - DEFAULT_PADDING, LV_ANIM_ON);
         auto a = anim_create(bottom_area, anim_set_align,
                              DEFAULT_CARD_H + BUBBLE_HEIGHT + BUBBLE_POINTER_H * 2,
-                             DEFAULT_CARD_H + DEFAULT_PADDING, 300);
+                             DEFAULT_CARD_H + DEFAULT_PADDING, 300, 0, 0, 0);
         lv_anim_start(&a);
-        lv_obj_scroll_to_y(m_scr, lv_obj_get_y(top_area) - DEFAULT_PADDING, LV_ANIM_ON);
     }
 
 
