@@ -6,30 +6,34 @@
 #define LVGL_UITIME_H
 
 #include <ctime>
-#include "UIBase.h"
-class UITime  :public UIBase{
-public:
-    UITime();
-    UI_index get_index() override{
-        return UI_TIME;
-    }
-    void start_routine() override;
+#include "Base.h"
 
-    void routine() override;
+namespace UI {
+    class UITime : public Base {
+    public:
+        UITime();
 
-    void update_info(bool force=false);
+        index_t get_index() override {
+            return UI_TIME;
+        }
 
-private:
-    lv_obj_t *weather_anim;
-    lv_obj_t *time_label;
-    lv_obj_t *day_label;
-    lv_obj_t *date_label;
-    lv_obj_t *sep_line;
-    lv_point_t sep_line_points[2] = {{0, 0},
-                                     {0, 80}};
+        void start_routine() override;
 
-    tm last_tm{};
-};
+        void routine() override;
 
+        void update_info(bool force = false);
+
+    private:
+        lv_obj_t *weather_anim;
+        lv_obj_t *time_label;
+        lv_obj_t *day_label;
+        lv_obj_t *date_label;
+        lv_obj_t *sep_line;
+        lv_point_t sep_line_points[2] = {{0, 0},
+                                         {0, 80}};
+
+        tm last_tm{};
+    };
+}
 
 #endif //LVGL_UITIME_H

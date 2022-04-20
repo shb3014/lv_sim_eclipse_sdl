@@ -72,4 +72,5 @@ lv_style_t bar_get_default_style_indic();
 //endregion
 
 
+void ui_set_action(bool apply);
 #endif //UI_SANDBOX_TOOLS_H

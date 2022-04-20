@@ -4,11 +4,11 @@
 
 #include "tools.h"
 #include "drivers/QoiCodec.h"
+#include "ui/UIActionBox.h"
 #include "drivers/common.h"
 
-
 static void decode_to_canvas_cb(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t *data) {
-/* assume x===0 */
+    /* assume x===0 */
     int ptr = w * y;
     memcpy(get_canvas_buf() + ptr, data, w * h * sizeof(uint16_t));
 }
@@ -47,9 +47,7 @@ void anim_canvas_update(lv_obj_t *canvas) {
 }
 
 std::string get_asset_path(std::string &asset_name) {
-    std::string ret = std::string(PATH_ASSETS) + "/" + asset_name + ".mqoi";
-    log_d("opening %s", ret.c_str());
-    return ret;
+    return std::string(PATH_ASSETS) + "/" + asset_name + ".mqoi";
 }
 
 lv_anim_t
