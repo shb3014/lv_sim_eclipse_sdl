@@ -53,7 +53,7 @@ ChatBubble::ChatBubble(lv_obj_t *parent, lv_coord_t bubble_w, lv_coord_t bubble_
     lv_obj_set_style_text_color(m_card, lv_color_white(), 0);
 
     update_pointer_location(20, true);
-    m_pointer.update_color(lv_color_white());
+    update_color(lv_color_white());
     lv_obj_move_foreground(m_pointer.body);
 }
 
@@ -138,7 +138,6 @@ UIPlantStatus::UIPlantStatus()
           card_water(bottom_area, "water", "mL"),
           card_battery(bottom_area, "battery", "%"),
           card_light(bottom_area, "light", "lx") {
-//    lv_obj_clear_flag(m_scr, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_scrollbar_mode(m_scr, LV_SCROLLBAR_MODE_OFF);
     lv_obj_set_style_pad_top(m_scr, DEFAULT_PADDING, 0);
     lv_obj_set_style_pad_bottom(m_scr, DEFAULT_PADDING, 0);
@@ -156,7 +155,7 @@ UIPlantStatus::UIPlantStatus()
 
     lv_obj_align(top_area, LV_ALIGN_TOP_MID, 0, 0);
     lv_obj_align(bubble.m_space, LV_ALIGN_TOP_MID, 0, DEFAULT_CARD_H);
-    lv_obj_align(bottom_area, LV_ALIGN_TOP_MID, 0, (DEFAULT_CARD_H + DEFAULT_PADDING) * 2);
+    lv_obj_align(bottom_area, LV_ALIGN_TOP_MID, 0, DEFAULT_CARD_H + DEFAULT_PADDING);
     bubble.set_visible(false);
 }
 
@@ -175,8 +174,9 @@ void UIPlantStatus::hide_bubble_cb() {
     bubble.set_visible(false);
     auto a = anim_create(bottom_area, anim_set_align,
                          DEFAULT_CARD_H + BUBBLE_HEIGHT + BUBBLE_POINTER_H * 2,
-                         DEFAULT_CARD_H + DEFAULT_PADDING, 500);
+                         DEFAULT_CARD_H + DEFAULT_PADDING, 300);
     lv_anim_start(&a);
+    lv_obj_scroll_to_y(m_scr, lv_obj_get_y(top_area) - DEFAULT_PADDING, LV_ANIM_ON);
 }
 
 
@@ -199,10 +199,9 @@ void UIPlantStatus::update_bubble_status(const char *content, lv_color_t color, 
         }
         if (up != focus_top) {
             if (up) {
-                lv_obj_scroll_to_y(m_scr, lv_obj_get_y(top_area) - 5, LV_ANIM_ON);
+                lv_obj_scroll_to_y(m_scr, lv_obj_get_y(top_area) - DEFAULT_PADDING, LV_ANIM_ON);
             } else {
-                lv_obj_scroll_to_y(m_scr, lv_obj_get_y(bottom_area) + 200, LV_ANIM_ON);
-//                lv_obj_scroll_to_view(bottom_area,LV_ANIM_ON);
+                lv_obj_scroll_to_y(m_scr, lv_obj_get_y(bottom_area) + DEFAULT_PADDING, LV_ANIM_ON);
             }
             focus_top = up;
         }
@@ -211,7 +210,6 @@ void UIPlantStatus::update_bubble_status(const char *content, lv_color_t color, 
             auto a = anim_create(bubble.m_space, anim_fade, LV_OPA_COVER, LV_OPA_TRANSP, 300, 0, 0, 0, bubble_hide_cb,
                                  this);
             lv_anim_start(&a);
-            lv_obj_scroll_to_y(m_scr, lv_obj_get_y(top_area) - 5, LV_ANIM_ON);
         }
     }
 }
@@ -249,7 +247,7 @@ void UIPlantStatus::routine() {
     ;
     UIBase::routine();
     static int i = 0;
-    if (i++ > 30) {
+    if (i++ > 20) {
         select_next();
         i = 0;
     }
