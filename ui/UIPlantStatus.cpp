@@ -11,7 +11,7 @@ namespace UI {
         lv_obj_set_size(m_card, DEFAULT_CARD_W, DEFAULT_CARD_H);
         lv_obj_set_style_bg_opa(m_card, LV_OPA_TRANSP, 0);
         lv_obj_clear_flag(m_card, LV_OBJ_FLAG_SCROLLABLE);
-        lv_obj_set_style_radius(m_card, 30, 0);
+        lv_obj_set_style_radius(m_card, 20, 0);
 
         m_value_label = lv_label_create(m_card);
         update_value_label("90");
