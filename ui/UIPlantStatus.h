@@ -104,6 +104,8 @@ namespace UI {
 
         void show_bubble_cb();
 
+        void move_bubble();
+
         void routine() override;
 
         void select_index(int index);

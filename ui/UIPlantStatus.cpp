@@ -157,10 +157,9 @@ namespace UI {
 
     UIPlantStatus::UIPlantStatus()
             : Base(),
-              top_area(m_scr, BUBBLE_AREA_H - DEFAULT_PADDING_H,
-                       0),
-              bottom_area(m_scr, BUBBLE_AREA_H + DEFAULT_CARD_H,
-                          BUBBLE_AREA_H * 2 - DEFAULT_PADDING_H + DEFAULT_CARD_H),
+              top_area(m_scr, 0, DEFAULT_PADDING_H - BUBBLE_AREA_H),
+              bottom_area(m_scr, DEFAULT_CARD_H + DEFAULT_PADDING_H,
+                          DEFAULT_CARD_H + BUBBLE_AREA_H),
               bubble(m_scr, DEFAULT_AREA_W, BUBBLE_HEIGHT, BUBBLE_POINTER_W, BUBBLE_POINTER_H),
               card_temp(top_area.m_area, "temp", "°C"),
               card_humidity(top_area.m_area, "humidity", "%"),
@@ -178,13 +177,12 @@ namespace UI {
         ui->show_bubble_cb();
     }
 
-    void UIPlantStatus::show_bubble_cb() {
-        if (current_area_select == top_selected) {
-            lv_obj_align_to(bubble.m_space, top_area.m_area, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
-        } else {
-            lv_obj_align_to(bubble.m_space, bottom_area.m_area, LV_ALIGN_OUT_TOP_MID, 0, 0);
+    void UIPlantStatus::move_bubble() {
+        lv_obj_align_to(bubble.m_space, top_area.m_area, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+    }
 
-        }
+    void UIPlantStatus::show_bubble_cb() {
+        move_bubble();
         bubble.set_visible(true);
         auto a = anim_create(bubble.m_space, anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, 500);
         lv_anim_start(&a);
@@ -218,7 +216,7 @@ namespace UI {
                 /* bubble was visible */
                 if (current_area_select == no_selection) {
                     /* hide bubble */
-                    auto a = anim_create(bubble.m_space, anim_fade, LV_OPA_COVER, LV_OPA_TRANSP, 500, 0, 0, 0,
+                    auto a = anim_create(bubble.m_space, anim_fade, LV_OPA_COVER, LV_OPA_TRANSP, 300, 0, 0, 0,
                                          bubble_hide_cb,
                                          this);
                     lv_anim_start(&a);
@@ -241,8 +239,8 @@ namespace UI {
         Base::routine();
         static int i = 0;
         if (i++ > 20) {
-            select_next();
-//            select_last();
+//            select_next();
+            select_last();
             i = 0;
         }
     }
@@ -305,16 +303,18 @@ namespace UI {
         printf("focus %d\n", t_focus);
         switch (t_focus) {
             case top_selected:
-                lv_obj_scroll_to_view(top_area.m_area, LV_ANIM_OFF);
+                top_area.move_back();
+                bottom_area.move_away();
+                move_bubble();
                 break;
             case no_selection:
-                lv_obj_scroll_to_view(top_area.m_area, LV_ANIM_OFF);
-                lv_obj_scroll_to_view(bottom_area.m_area, LV_ANIM_OFF);
-//                lv_obj_scroll_to_y(m_scr, 0,LV_ANIM_OFF);
-//                lv_obj_scroll_to_y(m_scr, lv_obj_get_y(top_area.m_area),LV_ANIM_OFF);
+                top_area.move_back();
+                bottom_area.move_back();
                 break;
             case bottom_selected:
-                lv_obj_scroll_to_view(bottom_area.m_area, LV_ANIM_OFF);
+                bottom_area.move_back();
+                top_area.move_away();
+                move_bubble();
                 break;
         }
     }
