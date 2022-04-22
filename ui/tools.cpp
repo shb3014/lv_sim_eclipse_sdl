@@ -86,6 +86,10 @@ void anim_move_hor(void *var, int32_t value) {
     lv_obj_set_x((lv_obj_t *) var, value);
 }
 
+void anim_set_align_top(void *var, int32_t value) {
+    lv_obj_align((lv_obj_t *) var, LV_ALIGN_TOP_MID, 0, value);
+}
+
 //region style
 lv_style_t bar_get_default_style_bg() {
     lv_style_t style;

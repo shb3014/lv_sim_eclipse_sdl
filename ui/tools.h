@@ -55,6 +55,8 @@ void anim_fade(void *var, int32_t value);
 void anim_move_ver(void *var, int32_t value);
 
 void anim_move_hor(void *var, int32_t value);
+
+void anim_set_align_top(void *var, int32_t value);
 //endregion
 
 //region style

@@ -82,7 +82,34 @@ namespace UI {
         } else {
             lv_obj_add_flag(m_space, LV_OBJ_FLAG_HIDDEN);
         }
-        visible = show;
+    }
+
+    CardArea::CardArea(lv_obj_t *parent, lv_coord_t pos_init, lv_coord_t pos_offset) :
+            m_area(lv_obj_create(parent)),
+            m_pos_init(pos_init),
+            m_pos_offset(pos_offset) {
+        lv_obj_remove_style_all(m_area);
+        lv_obj_clear_flag(m_area, LV_OBJ_FLAG_SCROLLABLE);
+        lv_obj_set_size(m_area, DEFAULT_AREA_W, DEFAULT_CARD_H);
+
+        lv_obj_set_flex_flow(m_area, LV_FLEX_FLOW_ROW);
+        lv_obj_set_flex_align(m_area, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_SPACE_EVENLY,
+                              LV_FLEX_ALIGN_SPACE_EVENLY);
+        lv_obj_set_style_pad_all(m_area, 0, 0);
+        lv_obj_align(m_area, LV_ALIGN_TOP_MID, 0, m_pos_init);
+    }
+
+    void CardArea::move_away() const {
+        lv_obj_align(m_area, LV_ALIGN_TOP_MID, 0, m_pos_offset);
+    }
+
+    void CardArea::move_away(lv_anim_ready_cb_t cb, void *user_data) const {
+        auto a = anim_create(m_area, anim_set_align_top, m_pos_init, m_pos_offset, 300, 0, 0, 0, cb, user_data);
+        lv_anim_start(&a);
+    }
+
+    void CardArea::move_back() const {
+        lv_obj_align(m_area, LV_ALIGN_TOP_MID, 0, m_pos_init);
     }
 
     BubblePointer::BubblePointer(lv_obj_t *parent, lv_coord_t pointer_w, lv_coord_t pointer_h, lv_coord_t line_w)
@@ -130,54 +157,44 @@ namespace UI {
 
     UIPlantStatus::UIPlantStatus()
             : Base(),
-              top_area(lv_obj_create(m_scr)),
-              bottom_area(lv_obj_create(m_scr)),
+              top_area(m_scr, BUBBLE_AREA_H - DEFAULT_PADDING_H,
+                       0),
+              bottom_area(m_scr, BUBBLE_AREA_H + DEFAULT_CARD_H,
+                          BUBBLE_AREA_H * 2 - DEFAULT_PADDING_H + DEFAULT_CARD_H),
               bubble(m_scr, DEFAULT_AREA_W, BUBBLE_HEIGHT, BUBBLE_POINTER_W, BUBBLE_POINTER_H),
-              card_temp(top_area, "temp", "°C"),
-              card_humidity(top_area, "humidity", "%"),
-              card_soil(top_area, "soil", "%"),
-              card_water(bottom_area, "water", "mL"),
-              card_battery(bottom_area, "battery", "%"),
-              card_light(bottom_area, "light", "lx") {
+              card_temp(top_area.m_area, "temp", "°C"),
+              card_humidity(top_area.m_area, "humidity", "%"),
+              card_soil(top_area.m_area, "soil", "%"),
+              card_water(bottom_area.m_area, "water", "mL"),
+              card_battery(bottom_area.m_area, "battery", "%"),
+              card_light(bottom_area.m_area, "light", "lx") {
         lv_obj_set_scrollbar_mode(m_scr, LV_SCROLLBAR_MODE_OFF);
-        lv_obj_set_style_pad_ver(m_scr,DEFAULT_PADDING_H,0);
-
-        lv_obj_remove_style_all(top_area);
-        lv_obj_remove_style_all(bottom_area);
-        lv_obj_clear_flag(top_area, LV_OBJ_FLAG_SCROLLABLE);
-        lv_obj_clear_flag(bottom_area, LV_OBJ_FLAG_SCROLLABLE);
-        lv_obj_set_size(top_area, DEFAULT_AREA_W, DEFAULT_CARD_H);
-        lv_obj_set_size(bottom_area, DEFAULT_AREA_W, DEFAULT_CARD_H);
-
-        lv_obj_set_flex_flow(top_area, LV_FLEX_FLOW_ROW);
-        lv_obj_set_flex_align(top_area, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_SPACE_EVENLY);
-        lv_obj_set_style_pad_all(top_area,0,0);
-
-        lv_obj_set_flex_flow(bottom_area, LV_FLEX_FLOW_ROW);
-        lv_obj_set_flex_align(bottom_area, LV_FLEX_ALIGN_SPACE_BETWEEN, LV_FLEX_ALIGN_SPACE_EVENLY, LV_FLEX_ALIGN_SPACE_EVENLY);
-        lv_obj_set_style_pad_all(bottom_area,0,0);
-
-        lv_obj_align(top_area, LV_ALIGN_TOP_MID, 0, 0);
-        lv_obj_align(bubble.m_space, LV_ALIGN_TOP_MID, 0, DEFAULT_CARD_H);
-        lv_obj_align(bottom_area, LV_ALIGN_TOP_MID, 0, DEFAULT_CARD_H + DEFAULT_PADDING_H);
-        bubble.set_visible(false);
+        lv_obj_set_style_pad_ver(m_scr, DEFAULT_PADDING_H, 0);
+        hide_bubble_cb();
     }
 
-    static void anim_set_align(void *var, int32_t value) {
-        lv_obj_align((lv_obj_t *) var, LV_ALIGN_TOP_MID, 0, value);
+    static void _show_bubble_cb(struct _lv_anim_t *anim) {
+        auto *ui = static_cast<UIPlantStatus *>(anim->user_data);
+        ui->show_bubble_cb();
     }
 
-    static void bubble_show_cb(struct _lv_anim_t *anim) {
-        auto *bubble = static_cast<ChatBubble *>(anim->user_data);
-        bubble->set_visible(true);
-        auto a = anim_create(bubble->m_space, anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, 500);
+    void UIPlantStatus::show_bubble_cb() {
+        if (current_area_select == top_selected) {
+            lv_obj_align_to(bubble.m_space, top_area.m_area, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+        } else {
+            lv_obj_align_to(bubble.m_space, bottom_area.m_area, LV_ALIGN_OUT_TOP_MID, 0, 0);
+
+        }
+        bubble.set_visible(true);
+        auto a = anim_create(bubble.m_space, anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, 500);
         lv_anim_start(&a);
     }
 
     void UIPlantStatus::hide_bubble_cb() {
         bubble.set_visible(false);
-        lv_obj_align(bottom_area, LV_ALIGN_TOP_MID, 0, DEFAULT_CARD_H + DEFAULT_PADDING_H);
-        lv_obj_scroll_to_y(m_scr, lv_obj_get_y(top_area) - DEFAULT_PADDING_H, LV_ANIM_OFF);
+        top_area.move_back();
+        bottom_area.move_back();
+        set_focus(no_selection);
     }
 
 
@@ -186,32 +203,36 @@ namespace UI {
         ui->hide_bubble_cb();
     }
 
-    void UIPlantStatus::update_bubble_status(const char *content, lv_color_t color, lv_coord_t x, bool up, bool show) {
-        if (show) {
-            bubble.update_pointer_location(x, up);
+    void UIPlantStatus::update_bubble_status(const char *content, lv_color_t color, lv_coord_t x) {
+        if (current_area_select != no_selection) {
+            /* bubble should be visible */
+            bubble.update_pointer_location(x, current_area_select == top_selected);
             bubble.update_color(color);
             bubble.update_content(content);
-            if (!bubble.visible) {
-                auto a = anim_create(bottom_area, anim_set_align, DEFAULT_CARD_H + DEFAULT_PADDING_H,
-                                     DEFAULT_CARD_H + BUBBLE_HEIGHT + BUBBLE_POINTER_H * 2, 300, 0, 0, 0,
-                                     bubble_show_cb,
-                                     &bubble);
-                lv_anim_start(&a);
-            }
-            if (up != focus_top) {
-                if (up) {
-                    lv_obj_scroll_to_y(m_scr, lv_obj_get_y(top_area) - DEFAULT_PADDING_H, LV_ANIM_OFF);
+        }
+
+        if (current_area_select != last_area_select) {
+            printf("not equal\n");
+            /* focus should be shifted */
+            if (last_area_select != no_selection) {
+                /* bubble was visible */
+                if (current_area_select == no_selection) {
+                    /* hide bubble */
+                    auto a = anim_create(bubble.m_space, anim_fade, LV_OPA_COVER, LV_OPA_TRANSP, 500, 0, 0, 0,
+                                         bubble_hide_cb,
+                                         this);
+                    lv_anim_start(&a);
                 } else {
-                    lv_obj_scroll_to_y(m_scr, lv_obj_get_y(bottom_area) + DEFAULT_PADDING_H, LV_ANIM_OFF);
+                    /* simply shift focus */
+                    set_focus(current_area_select);
                 }
-                focus_top = up;
-            }
-        } else {
-            if (bubble.visible) {
-                auto a = anim_create(bubble.m_space, anim_fade, LV_OPA_COVER, LV_OPA_TRANSP, 500, 0, 0, 0,
-                                     bubble_hide_cb,
-                                     this);
-                lv_anim_start(&a);
+            } else {
+                /* bubble was not visible */
+                if (current_area_select == top_selected) {
+                    bottom_area.move_away(_show_bubble_cb, this);
+                } else {
+                    top_area.move_away(_show_bubble_cb, this);
+                }
             }
         }
     }
@@ -221,6 +242,7 @@ namespace UI {
         static int i = 0;
         if (i++ > 20) {
             select_next();
+//            select_last();
             i = 0;
         }
     }
@@ -229,18 +251,18 @@ namespace UI {
         if (index == current_index) {
             return;
         }
+        last_area_select = current_area_select;
         if (index == -1) {
-            update_bubble_status("", lv_color_white(), 0, false, false);
+            current_area_select = no_selection;
         } else {
-            bool up;
             if (index < 3) {
-                up = true;
+                current_area_select = top_selected;
             } else {
-                up = false;
+                current_area_select = bottom_selected;
             }
-            update_bubble_status(get_content_by_index(index).c_str(), get_color_by_index(index),
-                                 get_pointer_x_by_index(index), up, true);
         }
+        update_bubble_status(get_content_by_index(index).c_str(), get_color_by_index(index),
+                             get_pointer_x_by_index(index));
         current_index = index;
     }
 
@@ -249,6 +271,14 @@ namespace UI {
             select_index(-1);
         } else {
             select_index(current_index + 1);
+        }
+    }
+
+    void UIPlantStatus::select_last() {
+        if (current_index > -1) {
+            select_index(current_index - 1);
+        } else {
+            select_index(5);
         }
     }
 
@@ -269,5 +299,32 @@ namespace UI {
 
     lv_color_t UIPlantStatus::get_color_by_index(int index) {
         return lv_color_white();
+    }
+
+    void UIPlantStatus::set_focus(area_select_t t_focus) {
+        printf("focus %d\n", t_focus);
+        switch (t_focus) {
+            case top_selected:
+                lv_obj_scroll_to_view(top_area.m_area, LV_ANIM_OFF);
+                break;
+            case no_selection:
+                lv_obj_scroll_to_view(top_area.m_area, LV_ANIM_OFF);
+                lv_obj_scroll_to_view(bottom_area.m_area, LV_ANIM_OFF);
+//                lv_obj_scroll_to_y(m_scr, 0,LV_ANIM_OFF);
+//                lv_obj_scroll_to_y(m_scr, lv_obj_get_y(top_area.m_area),LV_ANIM_OFF);
+                break;
+            case bottom_selected:
+                lv_obj_scroll_to_view(bottom_area.m_area, LV_ANIM_OFF);
+                break;
+        }
+    }
+
+    void UIPlantStatus::input_cb(input_t input) {
+        Base::input_cb(input);
+        if (input == UI_INPUT_LEFT) {
+            select_last();
+        } else if (input == UI_INPUT_RIGHT) {
+            select_next();
+        }
     }
 }

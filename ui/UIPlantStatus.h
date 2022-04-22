@@ -8,10 +8,12 @@
 #include "Base.h"
 #include "vector"
 #include "string"
+
 namespace UI {
 #define BUBBLE_HEIGHT               90
 #define BUBBLE_POINTER_W            20
 #define BUBBLE_POINTER_H            10
+#define BUBBLE_AREA_H               (BUBBLE_HEIGHT + 2 * BUBBLE_POINTER_H)
 #define DEFAULT_PADDING_W           6
 #define DEFAULT_PADDING_H           5
 #define DEFAULT_AREA_W              (DEFAULT_CARD_W * 3 + DEFAULT_PADDING_W * 2)
@@ -66,11 +68,26 @@ namespace UI {
         void set_visible(bool show);
 
         lv_obj_t *m_space;
-        bool visible = false;
     private:
         BubblePointer m_pointer;
         lv_obj_t *m_card;
         lv_obj_t *m_label;
+    };
+
+    class CardArea {
+    public:
+        CardArea(lv_obj_t *parent,lv_coord_t pos_init,lv_coord_t pos_offset);
+
+        void move_away(lv_anim_ready_cb_t cb, void*user_data) const;
+
+        void move_away() const;
+
+        void move_back() const;
+
+        lv_obj_t *m_area;
+    private:
+        lv_coord_t m_pos_init;
+        lv_coord_t m_pos_offset;
     };
 
     class UIPlantStatus : public Base {
@@ -81,9 +98,11 @@ namespace UI {
             return UI_PLANT_STATUS;
         }
 
-        void update_bubble_status(const char *content, lv_color_t color, lv_coord_t x, bool up, bool show);
+        void update_bubble_status(const char *content, lv_color_t color, lv_coord_t x);
 
         void hide_bubble_cb();
+
+        void show_bubble_cb();
 
         void routine() override;
 
@@ -91,18 +110,20 @@ namespace UI {
 
         void select_next();
 
+        void select_last();
+
         std::string get_content_by_index(int index);
 
         lv_color_t get_color_by_index(int index);
 
+        void input_cb(input_t input) override;
+
     private:
         static lv_coord_t get_pointer_x_by_index(int index);
 
-//    lv_coord_t col_dsc[4] = {100, 100, 100, LV_GRID_TEMPLATE_LAST};
-//    lv_coord_t row_dsc[4] = {110, 110, 110, LV_GRID_TEMPLATE_LAST};
-        lv_obj_t *top_area;
+        CardArea top_area;
         ChatBubble bubble;
-        lv_obj_t *bottom_area;
+        CardArea bottom_area;
         StatusCard card_temp;
         StatusCard card_humidity;
         StatusCard card_soil;
@@ -110,8 +131,16 @@ namespace UI {
         StatusCard card_battery;
         StatusCard card_light;
 
-        bool focus_top = true;
+        typedef enum{
+            top_selected,
+            no_selection,
+            bottom_selected,
+        }area_select_t;
+
+        void set_focus(area_select_t t_focus);
         int current_index = -1;
+        area_select_t last_area_select = no_selection;
+        area_select_t current_area_select = no_selection;
     };
 }
 
