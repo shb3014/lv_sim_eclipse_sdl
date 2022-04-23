@@ -42,12 +42,14 @@ namespace UI {
             lv_label_set_text(m_value_label, value_str.c_str());
             if (value_str.length() >= 5) {
                 lv_obj_set_style_text_font(m_value_label, &ba_16, 0);
+            lv_obj_align(m_value_label, LV_ALIGN_TOP_MID, 0, 14);
             } else if (value_str.length() > 3) {
                 lv_obj_set_style_text_font(m_value_label, &ba_30, 0);
+                lv_obj_align(m_value_label, LV_ALIGN_TOP_MID, 0, 10);
             } else {
                 lv_obj_set_style_text_font(m_value_label, &ba_40, 0);
+                lv_obj_align(m_value_label, LV_ALIGN_TOP_MID, 0, 6);
             }
-            lv_obj_align(m_value_label, LV_ALIGN_TOP_MID, 0, 6);
             lv_obj_set_style_text_color(m_value_label, lv_color_white(), 0);
         }
     }
@@ -177,9 +179,12 @@ namespace UI {
     static void status_update_timer_cb(lv_timer_t *timer) {
         auto ui = static_cast<UIPlantStatus *>(timer->user_data);
 #ifdef LV_SIM
-        static double i = 1.0;
-        i = i*2;
-        ui->get_card_by_index(UIPlantStatus::light).update_value_label(double_to_string(i,1));
+        ui->get_card_by_index(UIPlantStatus::light).update_value_label("23024");
+        ui->get_card_by_index(UIPlantStatus::temp).update_value_label("25");
+        ui->get_card_by_index(UIPlantStatus::humidity).update_value_label("100");
+        ui->get_card_by_index(UIPlantStatus::soil).update_value_label("100");
+        ui->get_card_by_index(UIPlantStatus::water).update_value_label("110");
+        ui->get_card_by_index(UIPlantStatus::battery).update_value_label("45");
 #else
         ui->get_card_by_index(UIPlantStatus::light).update_value_label(
                 std::to_string(Prop::get<int>(Prop::ambient_light)));
