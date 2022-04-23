@@ -4,23 +4,30 @@
 
 #include "UIPlantStatus.h"
 #include "tools.h"
+#include "tool/sys.h"
+
+#ifndef LV_SIM
+
+#include "Engine/Public.h"
+
+#endif
 
 namespace UI {
-    StatusCard::StatusCard(lv_obj_t *parent, const char *name, const char *unit) {
+    StatusCard::StatusCard(lv_obj_t *parent, const char *name, const char *unit, lv_color_t name_color) {
         m_card = lv_obj_create(parent);
-        lv_obj_set_size(m_card, DEFAULT_CARD_W, DEFAULT_CARD_H);
+        lv_obj_set_size(m_card, DEFAULT_CARD_W - 2, DEFAULT_CARD_H - 2);
         lv_obj_set_style_bg_opa(m_card, LV_OPA_TRANSP, 0);
         lv_obj_clear_flag(m_card, LV_OBJ_FLAG_SCROLLABLE);
         lv_obj_set_style_radius(m_card, 20, 0);
 
         m_value_label = lv_label_create(m_card);
-        update_value_label("90");
+        update_value_label("--");
 
         m_name_label = lv_label_create(m_card);
         lv_label_set_text(m_name_label, name);
         lv_obj_align(m_name_label, LV_ALIGN_BOTTOM_MID, 0, -10);
         lv_obj_set_style_text_font(m_name_label, &ba_16, 0);
-        lv_obj_set_style_text_color(m_name_label, lv_color_white(), 0);
+        lv_obj_set_style_text_color(m_name_label, name_color, 0);
 
         m_unit_label = lv_label_create(m_card);
         lv_label_set_text(m_unit_label, unit);
@@ -29,12 +36,25 @@ namespace UI {
         lv_obj_set_style_text_color(m_unit_label, lv_color_white(), 0);
     }
 
-    void StatusCard::update_value_label(const char *value_str) {
+    void StatusCard::update_value_label(const std::string &value_str) {
         /* todo should adjust font size according to value string length */
-        lv_label_set_text(m_value_label, value_str);
-        lv_obj_set_style_text_font(m_value_label, &ba_40, 0);
-        lv_obj_align(m_value_label, LV_ALIGN_TOP_MID, 0, 0);
-        lv_obj_set_style_text_color(m_value_label, lv_color_white(), 0);
+        if (value_str != std::string(lv_label_get_text(m_value_label))) {
+            lv_label_set_text(m_value_label, value_str.c_str());
+            if (value_str.length() >= 5) {
+                lv_obj_set_style_text_font(m_value_label, &ba_16, 0);
+            } else if (value_str.length() > 3) {
+                lv_obj_set_style_text_font(m_value_label, &ba_30, 0);
+            } else {
+                lv_obj_set_style_text_font(m_value_label, &ba_40, 0);
+            }
+            lv_obj_align(m_value_label, LV_ALIGN_TOP_MID, 0, 6);
+            lv_obj_set_style_text_color(m_value_label, lv_color_white(), 0);
+        }
+    }
+
+    void StatusCard::update_selected_style(bool selected) const {
+        lv_obj_set_style_border_width(m_card, 2 + selected, 0);
+        lv_obj_set_size(m_card, DEFAULT_CARD_W + 2 * selected - 2, DEFAULT_CARD_H + 2 * selected - 2);
     }
 
     ChatBubble::ChatBubble(lv_obj_t *parent, lv_coord_t bubble_w, lv_coord_t bubble_h, lv_coord_t pointer_w,
@@ -154,6 +174,28 @@ namespace UI {
         lv_line_set_points(line_bottom, points_bottom.data(), 2);
     }
 
+    static void status_update_timer_cb(lv_timer_t *timer) {
+        auto ui = static_cast<UIPlantStatus *>(timer->user_data);
+#ifdef LV_SIM
+        static double i = 1.0;
+        i = i*2;
+        ui->get_card_by_index(UIPlantStatus::light).update_value_label(double_to_string(i,1));
+#else
+        ui->get_card_by_index(UIPlantStatus::light).update_value_label(
+                std::to_string(Prop::get<int>(Prop::ambient_light)));
+        ui->get_card_by_index(UIPlantStatus::temp).update_value_label(
+                double_to_string(Prop::get<double>(Prop::temperature), 1));
+        ui->get_card_by_index(UIPlantStatus::humidity).update_value_label(
+                std::to_string(Prop::get<int>(Prop::humidity)));
+        ui->get_card_by_index(UIPlantStatus::soil).update_value_label(
+                std::to_string(Prop::get<int>(Prop::soil_moisture)));
+        ui->get_card_by_index(UIPlantStatus::water).update_value_label(
+                std::to_string(Prop::get<int>(Prop::water_level)));
+        ui->get_card_by_index(UIPlantStatus::battery).update_value_label(
+                std::to_string(Prop::get<int>(Prop::battery_percent)));
+#endif
+    }
+
 
     UIPlantStatus::UIPlantStatus()
             : Base(),
@@ -161,14 +203,19 @@ namespace UI {
               bottom_area(m_scr, DEFAULT_CARD_H + DEFAULT_PADDING_H,
                           DEFAULT_CARD_H + BUBBLE_AREA_H),
               bubble(m_scr, DEFAULT_AREA_W, BUBBLE_HEIGHT, BUBBLE_POINTER_W, BUBBLE_POINTER_H),
-              card_temp(top_area.m_area, "temp", "°C"),
-              card_humidity(top_area.m_area, "humidity", "%"),
-              card_soil(top_area.m_area, "soil", "%"),
-              card_water(bottom_area.m_area, "water", "mL"),
-              card_battery(bottom_area.m_area, "battery", "%"),
-              card_light(bottom_area.m_area, "light", "lx") {
+              m_cards({
+                              StatusCard(top_area.m_area, "light", "lx", lv_color_make(249, 209, 113)),
+                              StatusCard(top_area.m_area, "temp", "°C", lv_color_make(255, 97, 97)),
+                              StatusCard(top_area.m_area, "humidity", "%", lv_color_make(154, 215, 253)),
+                              StatusCard(bottom_area.m_area, "soil", "%", lv_color_make(192, 160, 132)),
+                              StatusCard(bottom_area.m_area, "water", "mL", lv_color_make(154, 215, 253)),
+                              StatusCard(bottom_area.m_area, "battery", "%", lv_color_make(123, 214, 89))
+                      }) {
+
         lv_obj_set_scrollbar_mode(m_scr, LV_SCROLLBAR_MODE_OFF);
         lv_obj_set_style_pad_ver(m_scr, DEFAULT_PADDING_H, 0);
+        m_value_update_timer = lv_timer_create(status_update_timer_cb, 500, this);
+        lv_timer_set_repeat_count(m_value_update_timer, -1);
         hide_bubble_cb();
     }
 
@@ -210,7 +257,6 @@ namespace UI {
         }
 
         if (current_area_select != last_area_select) {
-            printf("not equal\n");
             /* focus should be shifted */
             if (last_area_select != no_selection) {
                 /* bubble was visible */
@@ -236,13 +282,30 @@ namespace UI {
     }
 
     void UIPlantStatus::routine() {
+#ifdef LV_SIM
         Base::routine();
         static int i = 0;
         if (i++ > 20) {
-//            select_next();
-            select_last();
+            select_next();
+//            select_last();
             i = 0;
         }
+#endif
+    }
+
+    void UIPlantStatus::update_selection_cb(int index) {
+        /* update bubble contents, color, and pointer pos */
+        update_bubble_status(get_content_by_index(index).c_str(), get_color_by_index(index),
+                             get_pointer_x_by_index(index));
+        /* update card style */
+        if (current_index != -1) {
+            /* should rm last card style */
+            get_card_by_index((sensor_index_t) current_index).update_selected_style(false);
+        }
+        if (index != -1) {
+            get_card_by_index((sensor_index_t) index).update_selected_style(true);
+        }
+        current_index = index;
     }
 
     void UIPlantStatus::select_index(int index) {
@@ -259,9 +322,7 @@ namespace UI {
                 current_area_select = bottom_selected;
             }
         }
-        update_bubble_status(get_content_by_index(index).c_str(), get_color_by_index(index),
-                             get_pointer_x_by_index(index));
-        current_index = index;
+        update_selection_cb(index);
     }
 
     void UIPlantStatus::select_next() {
@@ -300,7 +361,6 @@ namespace UI {
     }
 
     void UIPlantStatus::set_focus(area_select_t t_focus) {
-        printf("focus %d\n", t_focus);
         switch (t_focus) {
             case top_selected:
                 top_area.move_back();
@@ -326,5 +386,10 @@ namespace UI {
         } else if (input == UI_INPUT_RIGHT) {
             select_next();
         }
+    }
+
+    void UIPlantStatus::clear() {
+        lv_timer_del(m_value_update_timer);
+        Base::clear();
     }
 }

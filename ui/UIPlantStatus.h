@@ -22,13 +22,15 @@ namespace UI {
 
     class StatusCard {
     public:
-        StatusCard(lv_obj_t *parent, const char *name, const char *unit);
+        StatusCard(lv_obj_t *parent, const char *name, const char *unit, lv_color_t name_color);
 
         lv_obj_t *m_card;
+
+        void update_value_label(const std::string& value_str);
+
+        void update_selected_style(bool selected) const;
+
     private:
-        void update_value_label(const char *value_str);
-
-
         lv_obj_t *m_value_label;
         lv_obj_t *m_name_label;
         lv_obj_t *m_unit_label;
@@ -76,9 +78,9 @@ namespace UI {
 
     class CardArea {
     public:
-        CardArea(lv_obj_t *parent,lv_coord_t pos_init,lv_coord_t pos_offset);
+        CardArea(lv_obj_t *parent, lv_coord_t pos_init, lv_coord_t pos_offset);
 
-        void move_away(lv_anim_ready_cb_t cb, void*user_data) const;
+        void move_away(lv_anim_ready_cb_t cb, void *user_data) const;
 
         void move_away() const;
 
@@ -98,21 +100,22 @@ namespace UI {
             return UI_PLANT_STATUS;
         }
 
-        void update_bubble_status(const char *content, lv_color_t color, lv_coord_t x);
+        typedef enum {
+            light = 0,
+            temp,
+            humidity,
+            soil,
+            water,
+            battery,
+        } sensor_index_t;
 
-        void hide_bubble_cb();
-
-        void show_bubble_cb();
-
-        void move_bubble();
+        StatusCard &get_card_by_index(sensor_index_t index) {
+            return m_cards[index];
+        }
 
         void routine() override;
 
         void select_index(int index);
-
-        void select_next();
-
-        void select_last();
 
         std::string get_content_by_index(int index);
 
@@ -120,29 +123,43 @@ namespace UI {
 
         void input_cb(input_t input) override;
 
+        void hide_bubble_cb();
+
+        void show_bubble_cb();
+
+        void clear() override;
+
     private:
+        void update_selection_cb(int index);
+
         static lv_coord_t get_pointer_x_by_index(int index);
+
+        void update_bubble_status(const char *content, lv_color_t color, lv_coord_t x);
+
+        void move_bubble();
+
+        void select_next();
+
+        void select_last();
 
         CardArea top_area;
         ChatBubble bubble;
         CardArea bottom_area;
-        StatusCard card_temp;
-        StatusCard card_humidity;
-        StatusCard card_soil;
-        StatusCard card_water;
-        StatusCard card_battery;
-        StatusCard card_light;
+        std::vector<StatusCard> m_cards;
 
-        typedef enum{
+        typedef enum {
             top_selected,
             no_selection,
             bottom_selected,
-        }area_select_t;
+        } area_select_t;
 
         void set_focus(area_select_t t_focus);
+
         int current_index = -1;
         area_select_t last_area_select = no_selection;
         area_select_t current_area_select = no_selection;
+
+        lv_timer_t *m_value_update_timer;
     };
 }
 
