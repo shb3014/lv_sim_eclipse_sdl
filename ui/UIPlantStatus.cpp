@@ -300,7 +300,7 @@ namespace UI {
 
     void UIPlantStatus::update_selection_cb(int index) {
         /* update bubble contents, color, and pointer pos */
-        update_bubble_status(get_content_by_index(index).c_str(), get_color_by_index(index),
+        update_bubble_status(get_content_by_index(index).c_str(), get_name_color_by_index(index),
                              get_pointer_x_by_index(index));
         /* update card style */
         if (current_index != -1) {
@@ -361,7 +361,7 @@ namespace UI {
         return "test";  /* todo */
     }
 
-    lv_color_t UIPlantStatus::get_color_by_index(int index) {
+    lv_color_t UIPlantStatus::get_name_color_by_index(int index) {
         return lv_color_white();
     }
 

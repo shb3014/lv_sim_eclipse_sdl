@@ -119,7 +119,7 @@ namespace UI {
 
         std::string get_content_by_index(int index);
 
-        lv_color_t get_color_by_index(int index);
+        lv_color_t get_name_color_by_index(int index);
 
         void input_cb(input_t input) override;
 
