@@ -113,7 +113,7 @@ int main(int argc, char **argv) {
 //  lv_example_label_1();
 //    UIWeather ui;
 //    UIQrCode ui;
-//    UITime ui;
+    UI::UITime ui;
 //    UIProgress ui;
 //    UIDoubleProgress ui;
 //    UIDate ui;
@@ -121,7 +121,7 @@ int main(int argc, char **argv) {
 //    ui.update("Evolve", "Ivy is able to evolve, do you want to update now?", "Yes", "No", []() { log_d("left set"); },
 //              []() { log_d("right set"); },60);
 //    UILoading ui;
-    UI::UIPlantStatus ui;
+//    UI::UIPlantStatus ui;
     ui.set_start(true);
 //    ui.update_qr("https://smartapp.tuya.com/s/p?p=9sq9uydcv0aggmh5&uuid=6caca3de5cc488ef943wlm&v=2.0");
 //    ui.update_desc("Scan with #DB0000 Tuya# to activate");

@@ -10,8 +10,8 @@
 
 namespace UI {
     typedef enum {
-        UI_QUIT = -1,
-        UI_NONE = 0,
+        UI_NULL = -1,
+        UI_QUIT = 0,
         UI_PROGRESS,
         UI_DOUBLE_PROGRESS,
         UI_FLUID,
@@ -30,20 +30,67 @@ namespace UI {
         UI_INPUT_RIGHT,
     } input_t;
 
-    class UISiblings {
-    public:
-        explicit UISiblings(index_t left = UI_QUIT, index_t right = UI_QUIT, index_t next = UI_QUIT) : left(left),
-                                                                                                       right(right),
-                                                                                                       next(next) {};
-        index_t left;
-        index_t right;
-        index_t next;
-    };
+    typedef struct {
+        index_t index_ui;
+        int index_main;
+        int index_sub;
+    } RoutableTarget;
 
+    /* note this is not thread safe */
     class RouterMap {
     public:
+        RouterMap(std::initializer_list<std::vector<index_t>> map) : m_map(map) {}
+
+        RoutableTarget get_main_next(int current_main) {
+            int target_main;
+            if (current_main + 1 < get_main_size()) {
+                target_main = current_main + 1;
+            } else {
+                target_main = 0;
+            }
+            return {m_map[target_main][0], target_main, 0};
+        }
+
+        RoutableTarget get_sub_left(int current_main, int current_sub) {
+            auto &sub = m_map[current_main];
+            int target_sub;
+            if (current_sub > 0) {
+                target_sub = current_sub - 1;
+            } else {
+                target_sub = sub.size() - 1;
+            }
+            return {sub[target_sub], current_main, target_sub};
+        }
+
+        RoutableTarget get_sub_right(int current_main, int current_sub) {
+            auto &sub = m_map[current_main];
+            int target_sub;
+            if (current_sub + 1 < sub.size()) {
+                target_sub = current_sub + 1;
+            } else {
+                target_sub = 0;
+            }
+            return {sub[target_sub], current_main, target_sub};
+        }
+
+        index_t get_first() {
+            return m_map[0][0];
+        }
+
+        size_t get_main_size() {
+            return m_map.size();
+        }
+
+        size_t get_sub_size(unsigned index_main) {
+            if (index_main < m_map.size()) {
+                return m_map[index_main].size();
+            } else {
+                return 0;
+            }
+        }
+
     private:
-        std::vector<index_t> children;
+        std::vector<std::vector<index_t>> m_map;
     };
 
     class Base {
@@ -65,16 +112,8 @@ namespace UI {
         /* bound to touch events */
         virtual void input_cb(input_t input);
 
-        //region non-virtual members
-        /* set ui switching behavior todo use a global ui matrix instead */
-        void set_siblings(
-                UISiblings siblings) {
-            m_siblings = siblings;
-        }
-
-
-        UISiblings get_siblings() {
-            return m_siblings;
+        bool input_used() const {
+            return m_input_used;
         }
 
         void set_start(bool start = true) {
@@ -94,22 +133,70 @@ namespace UI {
         }
         //endregion
 
+        void set_router(RouterMap *map, int main, int sub) {
+            m_map = map;
+            m_router_main = main;
+            m_router_sub = sub;
+        }
+
+        RouterMap *get_router_map() {
+            return m_map;
+        }
+
+        bool routable() {
+            return get_router_map();
+        }
+
+        bool left_right_routable() {
+            return routable() && get_router_map()->get_sub_size(m_router_main) > 1;
+        }
+
+        RoutableTarget get_ui_next() {
+            if (m_map) {
+                return m_map->get_main_next(m_router_main);
+            } else {
+                return {UI_NULL, 0, 0};
+            }
+        }
+
+        RoutableTarget get_ui_left() {
+            if (m_map) {
+                return m_map->get_sub_left(m_router_main, m_router_sub);
+            } else {
+                return {UI_NULL, 0, 0};
+            }
+        }
+
+        RoutableTarget get_ui_right() {
+            if (m_map) {
+                return m_map->get_sub_right(m_router_main, m_router_sub);
+            } else {
+                return {UI_NULL, 0, 0};
+            }
+        }
+
+
     protected:
         /* animations and timers should be created and started here */
         virtual void start_routine() {}
 
-
-        UISiblings m_siblings;
         lv_obj_t *m_scr;
         bool m_start = false;
+        bool m_input_used = false;  /* note should be set to true if input_cb is implemented */
+        RouterMap *m_map = nullptr;
+        int m_router_main = 0;
+        int m_router_sub = 0;
+
+        lv_obj_t *m_routable_indicators[2];
     };
 
 /* Default empty UI class */
     class UIDefault : public Base {
+    public:
         using Base::Base;
 
         index_t get_index() override {
-            return UI_NONE;
+            return UI_QUIT;
         }
 
         bool started() const {
