@@ -24,7 +24,7 @@ namespace UI {
         UI_PLANT_STATUS,
         UI_QR,
         UI_TEST,
-        UI_Text,
+        UI_TEXT,
     } index_t;
 
     typedef enum {

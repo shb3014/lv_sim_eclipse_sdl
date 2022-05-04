@@ -15,7 +15,7 @@ namespace UI {
         UIText();
 
         index_t get_index() override {
-            return UI_Text;
+            return UI_TEXT;
         }
 
         void update(const char *main, const char *sub, bool anim_on = true);
@@ -24,17 +24,11 @@ namespace UI {
 
         void update_sub(const char *sub, bool anim_on = true);
 
-        void update_main();
-
-        void update_sub();
-
         void routine() override;
 
     private:
         BasicText m_text_main;
         BasicText m_text_sub;
-
-        void realign();
     };
 }
 
