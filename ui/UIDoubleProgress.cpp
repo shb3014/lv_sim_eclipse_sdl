@@ -7,18 +7,11 @@
 #include "tools.h"
 namespace UI {
     UIDoubleProgress::UIDoubleProgress() : UI::Base() {
-        style_bg = bar_get_default_style_bg();
-        style_indic = bar_get_default_style_indic();
-
         m_bar_1 = lv_bar_create(m_scr);
-        lv_obj_remove_style_all(m_bar_1);  /*To have a clean start*/
-        lv_obj_add_style(m_bar_1, &style_bg, 0);
-        lv_obj_add_style(m_bar_1, &style_indic, LV_PART_INDICATOR);
+        bar_set_default_style(m_bar_1);
 
         m_bar_2 = lv_bar_create(m_scr);
-        lv_obj_remove_style_all(m_bar_2);  /*To have a clean start*/
-        lv_obj_add_style(m_bar_2, &style_bg, 0);
-        lv_obj_add_style(m_bar_2, &style_indic, LV_PART_INDICATOR);
+        bar_set_default_style(m_bar_2);
 
         lv_obj_set_size(m_bar_1, 200, 20);
         lv_obj_align(m_bar_1, LV_ALIGN_CENTER, 0, -20);
@@ -27,22 +20,16 @@ namespace UI {
         lv_obj_align_to(m_bar_2, m_bar_1, LV_ALIGN_OUT_BOTTOM_MID, 0, 50);
 
         m_title_label = lv_label_create(m_scr);
-        lv_obj_set_style_text_font(m_title_label, &ba_30, 0);
-        lv_obj_set_style_text_color(m_title_label, lv_color_white(), 0);
-        lv_obj_set_style_text_align(m_title_label, LV_TEXT_ALIGN_CENTER, 0);
+        label_set_style(m_status_label_2,&ba_30);
         lv_obj_align_to(m_title_label, m_bar_2, LV_ALIGN_OUT_TOP_MID, 0, -20);
 
         m_status_label_1 = lv_label_create(m_scr);
-        lv_obj_set_style_text_font(m_status_label_1, &ba_16, 0);
-        lv_obj_set_style_text_color(m_status_label_1, lv_color_white(), 0);
-        lv_obj_set_style_text_align(m_status_label_1, LV_TEXT_ALIGN_CENTER, 0);
+        label_set_style(m_status_label_1,&ba_16);
         lv_obj_align_to(m_status_label_1, m_bar_1, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
         lv_obj_set_width(m_status_label_1, 300);
 
         m_status_label_2 = lv_label_create(m_scr);
-        lv_obj_set_style_text_font(m_status_label_2, &ba_16, 0);
-        lv_obj_set_style_text_color(m_status_label_2, lv_color_white(), 0);
-        lv_obj_set_style_text_align(m_status_label_2, LV_TEXT_ALIGN_CENTER, 0);
+        label_set_style(m_status_label_2,&ba_16);
         lv_obj_align_to(m_status_label_2, m_bar_2, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
     }
 

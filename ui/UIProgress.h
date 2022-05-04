@@ -17,11 +17,11 @@ namespace UI {
 
         void update(const char *title, const char *status, uint8_t progress);
 
-        void set_title(const char *value);
+        void update_title(const char *value);
 
-        void set_status(const char *value);
+        void update_status(const char *value);
 
-        void set_progress(uint8_t progress);
+        void update_progress(uint8_t progress);
 
     private:
         lv_obj_t *m_bar;

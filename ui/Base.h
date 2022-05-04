@@ -23,6 +23,8 @@ namespace UI {
         UI_LOADING,
         UI_PLANT_STATUS,
         UI_QR,
+        UI_TEST,
+        UI_Text,
     } index_t;
 
     typedef enum {

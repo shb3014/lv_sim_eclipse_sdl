@@ -33,6 +33,8 @@
 #include "ui/UILoading.h"
 #include "ui/UIQrCode.h"
 #include "ui/UIPlantStatus.h"
+#include "ui/UITest.h"
+#include "ui/UIText.h"
 #include "utils/log.h"
 #include "lv_conf.h"
 #include "chrono"
@@ -113,8 +115,8 @@ int main(int argc, char **argv) {
 //  lv_example_label_1();
 //    UIWeather ui;
 //    UIQrCode ui;
-    UI::UITime ui;
-//    UIProgress ui;
+//    UI::UITime ui;
+//    UI::UIProgress ui;
 //    UIDoubleProgress ui;
 //    UIDate ui;
 //    UIActionBox ui;
@@ -122,6 +124,13 @@ int main(int argc, char **argv) {
 //              []() { log_d("right set"); },60);
 //    UILoading ui;
 //    UI::UIPlantStatus ui;
+//    UI::UITest ui;
+//    ui.update_step("1. WiFi Test");
+//    ui.update_progress(40,5000);
+//    ui.update_desc("connecting");
+//    ui.update_value("");
+//    ui.set_start(true);
+    UI::UIText ui;
     ui.set_start(true);
 //    ui.update_qr("https://smartapp.tuya.com/s/p?p=9sq9uydcv0aggmh5&uuid=6caca3de5cc488ef943wlm&v=2.0");
 //    ui.update_desc("Scan with #DB0000 Tuya# to activate");

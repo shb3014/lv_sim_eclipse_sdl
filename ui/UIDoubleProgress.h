@@ -28,8 +28,6 @@ namespace UI {
         lv_obj_t *m_title_label;
         lv_obj_t *m_status_label_1;
         lv_obj_t *m_status_label_2;
-        lv_style_t style_bg;
-        lv_style_t style_indic;
 
     };
 }
