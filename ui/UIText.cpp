@@ -9,38 +9,26 @@ namespace UI {
     UIText::UIText()
             : m_text_main(m_scr, &ba_30),
               m_text_sub(m_scr, &ba_16) {
-
-        lv_obj_align(m_text_main.label, LV_ALIGN_CENTER, 0, -10);
-        lv_obj_align_to(m_text_sub.label, m_text_main.label, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
     }
 
     void UIText::update(const char *main, const char *sub, bool anim_on) {
         update_main(main, anim_on);
         update_sub(sub, anim_on);
+        realign();
     }
 
     void UIText::update_main(const char *main, bool anim_on) {
         m_text_main.update(main, anim_on);
+        realign();
     }
 
     void UIText::update_sub(const char *sub, bool anim_on) {
         m_text_sub.update(sub, anim_on);
+        realign();
     }
 
-    void UIText::routine() {
-        static int i = 0;
-        if (i == 280) {
-            update("Please follow me", "");
-        } else if (i == 210) {
-            update("To know me better", "");
-        } else if (i == 140) {
-            update("Nice to meet you", "");
-        } else if (i == 70) {
-            update("I'm Ivy", "");
-        } else if (i == 1) {
-            update("Hi", "", true);
-        }
-        i++;
-        Base::routine();
+    void UIText::realign() {
+        lv_obj_align(m_text_main.label, LV_ALIGN_CENTER, 0, -20);
+        lv_obj_align_to(m_text_sub.label, m_text_main.label, LV_ALIGN_OUT_BOTTOM_MID, 0, 20);
     }
 }

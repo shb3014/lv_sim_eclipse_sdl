@@ -24,7 +24,7 @@ namespace UI {
 
         void update_sub(const char *sub, bool anim_on = true);
 
-        void routine() override;
+        void realign();
 
     private:
         BasicText m_text_main;

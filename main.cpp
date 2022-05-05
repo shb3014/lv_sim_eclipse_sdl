@@ -38,6 +38,10 @@
 #include "utils/log.h"
 #include "lv_conf.h"
 #include "chrono"
+#include "memory"
+#include "thread"
+#include "mutex"
+#include "ui/tools.h"
 
 /*********************
  *      DEFINES
@@ -86,6 +90,36 @@ static int tick_thread(void *data);
  *   GLOBAL FUNCTIONS
  **********************/
 
+
+std::shared_ptr<UI::Base> current_ui;
+std::recursive_mutex ui_mutex;
+
+void vTaskDelay(int t) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(t));
+}
+
+void ui_thread() {
+    printf("xxxx\n");
+    auto ui = std::make_shared<UI::UIText>();
+    {
+        std::lock_guard<std::recursive_mutex> lock(ui_mutex);
+        current_ui = ui;
+        ui->set_start(true);
+        ui->update("Hi", "");
+    }
+    vTaskDelay(3000);
+    ui->update_main("I'm Ivy");
+    vTaskDelay(3000);
+    ui->update_main("Nice to meet you");
+    vTaskDelay(3000);
+    ui->update_main("Before we enter tutorial");
+    vTaskDelay(3000);
+    ui->update_main("Please make sure my plant is ready");
+    vTaskDelay(3000);
+    ui->update_sub((UI::get_colored_str("Otherwise", UI::palette_warning) +
+                    ", please shutdown by long pressing the back button").c_str());
+}
+
 int main(int argc, char **argv) {
     (void) argc; /*Unused*/
     (void) argv; /*Unused*/
@@ -95,6 +129,7 @@ int main(int argc, char **argv) {
 
     /*Initialize the HAL (display, input devices, tick) for LVGL*/
     hal_init();
+    current_ui = std::make_shared<UI::UIDefault>();
 
 //  lv_example_switch_1();
 //  lv_example_calendar_1();
@@ -130,16 +165,17 @@ int main(int argc, char **argv) {
 //    ui.update_desc("connecting");
 //    ui.update_value("");
 //    ui.set_start(true);
-    UI::UIText ui;
-    ui.set_start(true);
+//    UI::UIText ui;
+//    ui.set_start(true);
 //    ui.update_qr("https://smartapp.tuya.com/s/p?p=9sq9uydcv0aggmh5&uuid=6caca3de5cc488ef943wlm&v=2.0");
 //    ui.update_desc("Scan with #DB0000 Tuya# to activate");
 //    ui.update_qr("ver: v1, name: ivy1231241, pop: 123141, transport: softap");
 //    ui.update_desc("Scan with #DB0000 ESP32 SoftAP# to provision");
 //    ui.update("Checking Updates", "requesting from plantsio server");
 //    lv_demo_widgets();
-    lv_scr_load(lv_scr_act());
+//    lv_scr_load(lv_scr_act());
     log_i("main start");
+    std::thread thread_ui(ui_thread);
 
 //    ui.update("Progress Test","upgrading",30);
 //    ui.update("Evolving","downloading /assets/test.txt",30,"total",10);
@@ -148,15 +184,19 @@ int main(int argc, char **argv) {
         auto start = std::chrono::steady_clock::now();
         /* Periodically call the lv_task handler.
          * It could be done in a timer interrupt or an OS task too.*/
-        ui.routine();
-        lv_timer_handler();
+        {
+            std::lock_guard<std::recursive_mutex> lock(ui_mutex);
+            current_ui->routine();
+            lv_timer_handler();
+        }
         auto end = std::chrono::steady_clock::now();
         uint32_t frame_t = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
         double target_t = 1;
         if ((double) frame_t < 41.6) {
             target_t = 41.6 - (double) frame_t;
         }
-        usleep((int) (target_t * 1000));
+        vTaskDelay(target_t);
+//        usleep((int) (target_t * 1000));
     }
 
     return 0;

@@ -63,6 +63,7 @@ namespace UI {
 //region style
 //endregion
 
+    void bar_set_default_style(lv_obj_t *bar);
 
     void ui_set_action(bool apply);
 
@@ -74,13 +75,11 @@ namespace UI {
         palette_failure,
     } palette_t;
 
-    lv_color_t get_palette(palette_t palette);
+    lv_color_t get_palette_rgb(palette_t palette);
 
-/**
- * default style for bar background
- * @return
- */
-    void bar_set_default_style(lv_obj_t *bar);
+    std::string get_palette_hex(palette_t palette);
+
+    std::string get_colored_str(const char *content, palette_t palette);
 
     void label_set_style(lv_obj_t *label, const lv_font_t *font, lv_color_t color = lv_color_white(),
                          lv_text_align_t align = LV_TEXT_ALIGN_CENTER);

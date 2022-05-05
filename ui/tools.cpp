@@ -93,11 +93,30 @@ namespace UI {
     }
 
 //region style
+    lv_color_t get_palette_rgb(palette_t palette) {
+        static const lv_color_t colors[] = {
+                LV_COLOR_MAKE(52, 192, 0), LV_COLOR_MAKE(245, 203, 38), LV_COLOR_MAKE(255, 153, 102),
+                LV_COLOR_MAKE(219, 0, 0)
+        };
+        return colors[palette];
+    }
+
+    std::string get_palette_hex(palette_t palette) {
+        static const std::string colors[] = {
+                "34c000", "f5cb26", "ff9966", "db0000"
+        };
+        return colors[palette];
+    }
+
+    std::string get_colored_str(const char *content, palette_t palette) {
+        return std::string("#") + get_palette_hex(palette) + " " + content + "#";
+    }
+
     void bar_set_default_style(lv_obj_t *bar) {
         lv_obj_remove_style_all(bar);  /*To have a clean start*/
         static lv_style_t style_bg;
         lv_style_init(&style_bg);
-        lv_style_set_border_color(&style_bg, get_palette(palette_success));
+        lv_style_set_border_color(&style_bg, get_palette_rgb(palette_success));
         lv_style_set_border_width(&style_bg, 2);
         lv_style_set_pad_all(&style_bg, 6); /*To make the indicator smaller*/
         lv_style_set_radius(&style_bg, 6);
@@ -106,19 +125,11 @@ namespace UI {
         static lv_style_t style_indic;
         lv_style_init(&style_indic);
         lv_style_set_bg_opa(&style_indic, LV_OPA_COVER);
-        lv_style_set_bg_color(&style_indic, get_palette(palette_success));
+        lv_style_set_bg_color(&style_indic, get_palette_rgb(palette_success));
         lv_style_set_radius(&style_indic, 3);
 
         lv_obj_add_style(bar, &style_bg, 0);
         lv_obj_add_style(bar, &style_indic, LV_PART_INDICATOR);
-    }
-
-    lv_color_t get_palette(palette_t palette) {
-        static const lv_color_t colors[] = {
-                LV_COLOR_MAKE(52, 192, 0), LV_COLOR_MAKE(245, 203, 38), LV_COLOR_MAKE(255, 153, 102),
-                LV_COLOR_MAKE(219, 0, 0)
-        };
-        return colors[palette];
     }
 
     void label_set_style(lv_obj_t *label, const lv_font_t *font, lv_color_t color, lv_text_align_t align) {
