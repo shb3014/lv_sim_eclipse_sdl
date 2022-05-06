@@ -35,6 +35,7 @@
 #include "ui/UIPlantStatus.h"
 #include "ui/UITest.h"
 #include "ui/UIText.h"
+#include "ui/TutorialUI.h"
 #include "utils/log.h"
 #include "lv_conf.h"
 #include "chrono"
@@ -99,25 +100,14 @@ void vTaskDelay(int t) {
 }
 
 void ui_thread() {
-    printf("xxxx\n");
-    auto ui = std::make_shared<UI::UIText>();
+    printf("ui start\n");
+//    auto ui = std::make_shared<UI::TuIntro>();
+    auto ui = std::make_shared<UI::TuTouchBar>();
     {
         std::lock_guard<std::recursive_mutex> lock(ui_mutex);
         current_ui = ui;
         ui->set_start(true);
-        ui->update("Hi", "");
     }
-    vTaskDelay(3000);
-    ui->update_main("I'm Ivy");
-    vTaskDelay(3000);
-    ui->update_main("Nice to meet you");
-    vTaskDelay(3000);
-    ui->update_main("Before we enter tutorial");
-    vTaskDelay(3000);
-    ui->update_main("Please make sure my plant is ready");
-    vTaskDelay(3000);
-    ui->update_sub((UI::get_colored_str("Otherwise", UI::palette_warning) +
-                    ", please shutdown by long pressing the back button").c_str());
 }
 
 int main(int argc, char **argv) {

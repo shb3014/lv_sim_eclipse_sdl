@@ -11,11 +11,12 @@
 namespace UI {
     class BasicText {
     public:
-        explicit BasicText(lv_obj_t *parent, const lv_font_t *font, lv_coord_t width=280, int fade_out_t = 1200, int fade_in_t = 1000);
+        explicit BasicText(lv_obj_t *parent, const lv_font_t *font, lv_coord_t width = 280, int fade_out_t = 1200,
+                           int fade_in_t = 1000);
 
         void update() const;
 
-        void update(const char *content, bool anim_on);
+        void update(const char *content, bool anim_on = true);
 
         void fade_in() const;
 

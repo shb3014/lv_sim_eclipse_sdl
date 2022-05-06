@@ -25,6 +25,9 @@ namespace UI {
         UI_QR,
         UI_TEST,
         UI_TEXT,
+
+        TU_INTRO,
+        TU_TOUCH_BAR
     } index_t;
 
     typedef enum {
@@ -37,6 +40,12 @@ namespace UI {
         int index_main;
         int index_sub;
     } RoutableTarget;
+
+    typedef enum {
+        left = 0,
+        right,
+        all,
+    } routable_indicator_part;
 
     /* note this is not thread safe */
     class RouterMap {
@@ -118,6 +127,13 @@ namespace UI {
             return m_input_used;
         }
 
+        void set_input_used(bool used) {
+            m_input_used = true;
+            if (used) {
+                set_routable_indicator_visible(true);
+            }
+        }
+
         void set_start(bool start = true) {
             m_start = start;
             if (start && m_scr) {
@@ -135,10 +151,15 @@ namespace UI {
         }
         //endregion
 
+        void set_routable_indicator_visible(bool visible, routable_indicator_part part = all);
+
         void set_router(RouterMap *map, int main, int sub) {
             m_map = map;
             m_router_main = main;
             m_router_sub = sub;
+            if (left_right_routable()) {
+                set_routable_indicator_visible(true);
+            }
         }
 
         RouterMap *get_router_map() {
@@ -189,7 +210,7 @@ namespace UI {
         int m_router_main = 0;
         int m_router_sub = 0;
 
-        lv_obj_t *m_routable_indicators[2];
+        lv_obj_t *m_routable_indicators[2] = {};
     };
 
 /* Default empty UI class */

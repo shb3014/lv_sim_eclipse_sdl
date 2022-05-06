@@ -36,4 +36,21 @@ namespace UI {
     void Base::input_cb(input_t input) {
 
     }
+
+    void Base::set_routable_indicator_visible(bool visible, routable_indicator_part part) {
+        std::vector<lv_obj_t *> indicators;
+        if (part == left || part == all) {
+            indicators.push_back(m_routable_indicators[0]);
+        }
+        if (part == right || part == all) {
+            indicators.push_back(m_routable_indicators[1]);
+        }
+        for (auto &m_routable_indicator: indicators) {
+            if (visible) {
+                lv_obj_clear_flag(m_routable_indicator, LV_OBJ_FLAG_HIDDEN);
+            } else {
+                lv_obj_add_flag(m_routable_indicator, LV_OBJ_FLAG_HIDDEN);
+            }
+        }
+    }
 }
