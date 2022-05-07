@@ -5,6 +5,13 @@
 #include "TutorialUI.h"
 #include "tools.h"
 
+#ifdef Ivy
+
+#include "memory"
+#include "Anim/drivers/LvglDriver.h"
+
+#endif
+
 namespace UI {
 
     //region TuBase
@@ -29,8 +36,8 @@ namespace UI {
 
     TuCanvasBase::TuCanvasBase()
             : TuBase(),
-              m_top_text(m_scr, &ba_16),
-              m_bottom_text(m_scr, &ba_16) {
+              m_top_text(m_scr, &ba_16, 250),
+              m_bottom_text(m_scr, &ba_16, 250) {
 
         m_canvas = lv_canvas_create(m_scr);
         anim_canvas_reset_asset();
@@ -89,12 +96,21 @@ namespace UI {
                 update_sub((UI::get_colored_str("Otherwise", UI::palette_warning) +
                             ", please shutdown by long pressing the back button").c_str());
                 break;
+            case 6:
+                update("", "");
+                break;
+            case 7:
+#ifdef Ivy
+                auto ui = std::make_shared<TuTouchBar>();
+                LvglDriver::instance().load(ui);
+#endif
+                break;
         }
     }
     //endregion
 
     TuTouchBar::TuTouchBar() : TuCanvasBase() {
-        anim_canvas_bind_asset(m_canvas, "ivy");
+        anim_canvas_bind_asset(m_canvas, "tu_ivy");
         anim_canvas_update(m_canvas);
 
 
@@ -123,26 +139,27 @@ namespace UI {
     void TuTouchBar::next() {
         switch (m_current_step++) {
             case 0:
-                m_top_text.update("There are two touch bars on the sides");
+                m_top_text.update("There are two touch bars");
                 lv_timer_set_period(m_timer, 3000);
                 break;
-            case 1:{
+            case 1: {
                 for (auto &circle: m_circles) {
                     lv_obj_clear_flag(circle, LV_OBJ_FLAG_HIDDEN);
-                    auto a = anim_create(circle, reinterpret_cast<lv_anim_exec_xcb_t>(lv_arc_set_bg_end_angle), 0, 360, 2000);
+                    auto a = anim_create(circle, reinterpret_cast<lv_anim_exec_xcb_t>(lv_arc_set_bg_end_angle), 0, 360,
+                                         2000);
                     lv_anim_start(&a);
                 }
                 lv_timer_set_period(m_timer, TU_INTRO_DELAY);
                 break;
             }
             case 2: {
-                m_top_text.update("The yellow dots imply intractable bars");
+                m_top_text.update((get_colored_str("Yellow", palette_notice) + " dots imply intractable bars").c_str());
                 for (auto &circle: m_circles) {
                     lv_obj_clear_flag(circle, LV_OBJ_FLAG_HIDDEN);
-                    auto a = anim_create(circle, anim_fade, LV_OPA_COVER, LV_OPA_TRANSP, 1500);
+                    auto a = anim_create(circle, anim_fade, LV_OPA_COVER, LV_OPA_TRANSP, 2000);
                     lv_anim_start(&a);
                 }
-                lv_timer_set_period(m_timer, 3000);
+                lv_timer_set_period(m_timer, 4000);
                 break;
             }
             case 3: {
@@ -161,7 +178,39 @@ namespace UI {
                 lv_anim_start(&a);
                 break;
             }
+            case 5: {
+                while (true) {
+                    printf("wait...\n");
+                }
+                break;
+            }
+            case 6: {
+                printf("here...\n");
+                break;
+            }
         }
 
+    }
+
+    TuProv::TuProv() : TuCanvasBase(), m_sub_text(m_scr, &ba_16) {
+        anim_canvas_bind_asset(m_canvas, "tu_app");
+        anim_canvas_update(m_canvas);
+        lv_obj_align(m_canvas, LV_ALIGN_CENTER, 0, 30);
+        lv_obj_align_to(m_sub_text.label, m_top_text.label, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
+    }
+
+    void TuProv::next() {
+        switch (m_current_step) {
+            case 0:
+                m_top_text.update("Now it's time to configure WiFi");
+                break;
+            case 1:
+                m_top_text.update("In Apple Store / Play Store");
+                m_sub_text.update((std::string("download ") +get_colored_str("Tuya Smart",palette_notice)
+                        +get_colored_str("Esp32 SoftAP Provisioning",palette_notice)).c_str());
+                m_bottom_text.update("Touch right to next step");
+                break;
+        }
+        m_current_step++;
     }
 }

@@ -69,10 +69,25 @@ namespace UI {
             return TU_TOUCH_BAR;
         }
 
-        void next()override;
+        void next() override;
 
     private:
         lv_obj_t *m_circles[2] = {};
+    };
+
+    class TuProv : public TuCanvasBase {
+    public:
+        TuProv();
+
+        index_t get_index() override {
+            return TU_PROV;
+        }
+
+        void next() override;
+
+    private:
+        BasicText m_sub_text;
+
     };
 }
 

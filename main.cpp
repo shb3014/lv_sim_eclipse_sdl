@@ -102,7 +102,8 @@ void vTaskDelay(int t) {
 void ui_thread() {
     printf("ui start\n");
 //    auto ui = std::make_shared<UI::TuIntro>();
-    auto ui = std::make_shared<UI::TuTouchBar>();
+//    auto ui = std::make_shared<UI::TuTouchBar>();
+    auto ui = std::make_shared<UI::TuProv>();
     {
         std::lock_guard<std::recursive_mutex> lock(ui_mutex);
         current_ui = ui;
