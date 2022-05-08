@@ -86,7 +86,9 @@ namespace UI {
         void next() override;
 
     private:
-        BasicText m_sub_text;
+        BasicText m_sub_text_a;
+        BasicText m_sub_text_b;
+        BasicText m_sub_text_c;
 
     };
 }

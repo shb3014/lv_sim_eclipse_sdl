@@ -8,4 +8,5 @@
 网络连接成功
 设备激活成功
 ▶
-ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890`~!@#$%^&*()-_+=\|]}[{;:'"/?.>,<°
+ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890`~!@#$%^&*()-_+=\|]}[{;:'"/?. >,<°
+0123456789 -:

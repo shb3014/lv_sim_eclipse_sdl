@@ -192,11 +192,14 @@ namespace UI {
 
     }
 
-    TuProv::TuProv() : TuCanvasBase(), m_sub_text(m_scr, &ba_16) {
+    TuProv::TuProv()
+            : TuCanvasBase(),
+              m_sub_text_a(m_scr, &ba_16, 80),
+              m_sub_text_b(m_scr, &ba_16, 210),
+              m_sub_text_c(m_scr,&ba_30,10) {
         anim_canvas_bind_asset(m_canvas, "tu_app");
         anim_canvas_update(m_canvas);
         lv_obj_align(m_canvas, LV_ALIGN_CENTER, 0, 30);
-        lv_obj_align_to(m_sub_text.label, m_top_text.label, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
     }
 
     void TuProv::next() {
@@ -204,12 +207,20 @@ namespace UI {
             case 0:
                 m_top_text.update("Now it's time to configure WiFi");
                 break;
-            case 1:
+            case 1: {
                 m_top_text.update("In Apple Store / Play Store");
-                m_sub_text.update((std::string("download ") +get_colored_str("Tuya Smart",palette_notice)
-                        +get_colored_str("Esp32 SoftAP Provisioning",palette_notice)).c_str());
+                m_sub_text_a.update("download");
+                m_sub_text_b.update("Esp32 SoftAP Provisioning\nTuya Smart");
+                lv_obj_set_style_text_color(m_sub_text_b.label, get_palette_rgb(palette_notice), 0);
+                lv_obj_set_style_text_align(m_sub_text_b.label, LV_TEXT_ALIGN_LEFT, 0);
+                m_sub_text_c.update("{");
+                lv_obj_align_to(m_sub_text_a.label, m_top_text.label, LV_ALIGN_OUT_BOTTOM_MID, -108, 30);
+                lv_obj_align_to(m_sub_text_b.label, m_top_text.label, LV_ALIGN_OUT_BOTTOM_MID, 55, 15);
+                lv_obj_align_to(m_sub_text_c.label, m_sub_text_a.label, LV_ALIGN_OUT_RIGHT_MID, 0, 0);
+                lv_obj_set_style_text_line_space(m_sub_text_b.label, 10, 0);
                 m_bottom_text.update("Touch right to next step");
                 break;
+            }
         }
         m_current_step++;
     }
