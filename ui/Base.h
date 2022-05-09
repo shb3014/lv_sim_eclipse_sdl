@@ -28,7 +28,8 @@ namespace UI {
 
         TU_INTRO,
         TU_TOUCH_BAR,
-        TU_PROV
+        TU_PROV,
+        TU_TUYA
     } index_t;
 
     typedef enum {

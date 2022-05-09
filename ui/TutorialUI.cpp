@@ -196,9 +196,10 @@ namespace UI {
             : TuCanvasBase(),
               m_sub_text_a(m_scr, &ba_16, 80),
               m_sub_text_b(m_scr, &ba_16, 210),
-              m_sub_text_c(m_scr,&ba_30,10) {
+              m_sub_text_c(m_scr, &ba_30, 10) {
         anim_canvas_bind_asset(m_canvas, "tu_app");
         anim_canvas_update(m_canvas);
+        lv_obj_add_flag(m_canvas, LV_OBJ_FLAG_HIDDEN);
         lv_obj_align(m_canvas, LV_ALIGN_CENTER, 0, 30);
     }
 
@@ -219,9 +220,50 @@ namespace UI {
                 lv_obj_align_to(m_sub_text_c.label, m_sub_text_a.label, LV_ALIGN_OUT_RIGHT_MID, 0, 0);
                 lv_obj_set_style_text_line_space(m_sub_text_b.label, 10, 0);
                 m_bottom_text.update("Touch right to next step");
+                lv_obj_set_style_opa(m_canvas, LV_OPA_TRANSP, 0);
+                lv_obj_clear_flag(m_canvas, LV_OBJ_FLAG_HIDDEN);
+                auto a = anim_create(m_canvas, anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, 1000, 1000);
+                lv_anim_start(&a);
+                set_routable_indicator_visible(true, right);
+                lv_obj_align(m_routable_indicators[1], LV_ALIGN_RIGHT_MID, -15, -20);
+                auto a2 = anim_create(m_routable_indicators[1], anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, 1000, 1000);
+                lv_anim_start(&a2);
                 break;
             }
         }
         m_current_step++;
+    }
+
+    TuTuya::TuTuya()
+            : TuCanvasBase() {
+        m_input_used = true;
+    }
+
+    void TuTuya::next() {
+        switch (m_current_step) {
+            case 0: {
+                m_top_text.update("Good! Let's now move to activation");
+                break;
+            }
+            case 1: {
+                m_top_text.update((std::string("Open ") + get_colored_str("Tuya Smart", palette_notice) +
+                                   "\nClick Add Device at the top right").c_str());
+                lv_obj_set_style_text_line_space(m_top_text.label, 8, 0);
+                anim_canvas_bind_asset(m_canvas, "tu_tuya_1");
+                anim_canvas_update(m_canvas);
+                lv_obj_align(m_canvas,LV_ALIGN_CENTER,0,20);
+                auto a = anim_create(m_canvas, anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, 1000, 1500);
+                lv_anim_start(&a);
+                set_routable_indicator_visible(true, right);
+                auto a2 = anim_create(m_routable_indicators[1], anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, 1000, 1000);
+                lv_anim_start(&a2);
+                break;
+            }
+        }
+        m_current_step++;
+    }
+
+    void TuTuya::input_cb(input_t input) {
+        Base::input_cb(input);
     }
 }

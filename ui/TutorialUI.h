@@ -91,6 +91,21 @@ namespace UI {
         BasicText m_sub_text_c;
 
     };
+
+    class TuTuya : public TuCanvasBase {
+    public:
+        TuTuya();
+
+        index_t get_index() override {
+            return TU_TUYA;
+        }
+
+        void next() override;
+
+        void input_cb(input_t input) override;
+
+    private:
+    };
 }
 
 
