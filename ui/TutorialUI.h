@@ -105,6 +105,8 @@ namespace UI {
         void input_cb(input_t input) override;
 
     private:
+        BasicText m_sub_text;
+        bool m_left_touched = false;
     };
 }
 

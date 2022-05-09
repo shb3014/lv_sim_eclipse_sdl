@@ -16,7 +16,7 @@ namespace UI {
 
         void update() const;
 
-        void update(const char *content, bool anim_on = true);
+        void update(const char *content, bool anim_on = true, bool force = false);
 
         void fade_in() const;
 

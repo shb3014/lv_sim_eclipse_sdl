@@ -235,7 +235,8 @@ namespace UI {
     }
 
     TuTuya::TuTuya()
-            : TuCanvasBase() {
+            : TuCanvasBase(),
+              m_sub_text(m_scr, &ba_16, 280) {
         m_input_used = true;
     }
 
@@ -246,17 +247,36 @@ namespace UI {
                 break;
             }
             case 1: {
-                m_top_text.update((std::string("Open ") + get_colored_str("Tuya Smart", palette_notice) +
-                                   "\nClick Add Device at the top right").c_str());
-                lv_obj_set_style_text_line_space(m_top_text.label, 8, 0);
+                m_top_text.update((std::string("Open ") + get_colored_str("Tuya Smart", palette_notice)).c_str());
+                m_sub_text.update((std::string("Click ") + get_colored_str("Add Device", palette_notice) +
+                                   " at the top right").c_str());
+                lv_obj_align_to(m_sub_text.label, m_top_text.label, LV_ALIGN_OUT_BOTTOM_MID, 0, 5);
+//                lv_obj_set_style_text_line_space(m_top_text.label, 8, 0);
                 anim_canvas_bind_asset(m_canvas, "tu_tuya_1");
                 anim_canvas_update(m_canvas);
-                lv_obj_align(m_canvas,LV_ALIGN_CENTER,0,20);
+                lv_obj_align(m_canvas, LV_ALIGN_CENTER, 0, 10);
                 auto a = anim_create(m_canvas, anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, 1000, 1500);
                 lv_anim_start(&a);
                 set_routable_indicator_visible(true, right);
                 auto a2 = anim_create(m_routable_indicators[1], anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, 1000, 1000);
                 lv_anim_start(&a2);
+                lv_timer_set_period(m_timer, 3000);
+                break;
+            }
+            case 2: {
+                m_bottom_text.update("Touch right to the next step");
+                lv_timer_set_period(m_timer, 5000);
+                break;
+            }
+            case 3: {
+                m_bottom_text.update("Touch right to the next step", true, true);
+                m_sub_text.update((std::string("Click the ") + get_colored_str("scan icon", palette_notice) +
+                                   " at the top right").c_str());
+                anim_canvas_change_bind(m_canvas, "tu_tuya_2", 1500);
+                break;
+            }
+            case 4: {
+//                m_top_text.update()
                 break;
             }
         }

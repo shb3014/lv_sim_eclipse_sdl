@@ -12,8 +12,8 @@
 namespace UI {
 //#define PATH_ASSETS "C:/Users/sungaoran/Desktop/wsl/video/assets"
 //#define PATH_ASSETS "C:/Users/Gordon/Desktop/EmbededProjects/lv_sim_eclipse_sdl/assets"
-#define PATH_ASSETS "D:/Ivy/device/assets/ouput"
-//#define PATH_ASSETS "C:/Users/sungaoran/Desktop/Ivy/out"
+//#define PATH_ASSETS "D:/Ivy/device/assets/ouput"
+#define PATH_ASSETS "C:/Users/sungaoran/Desktop/Ivy/out"
 
 //region animation
     std::string get_asset_path(std::string &asset_name);
@@ -25,6 +25,8 @@ namespace UI {
     void anim_canvas_bind(lv_obj_t *canvas, const char *filepath);
 
     void anim_canvas_update(lv_obj_t *canvas);
+
+    void anim_canvas_change_bind(lv_obj_t *canvas, std::string asset_name, uint32_t time, uint32_t delay = 0);
 
 /**
  * basic builder of object animations

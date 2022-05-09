@@ -3,6 +3,8 @@
 //
 
 #include "tools.h"
+
+#include <utility>
 #include "drivers/QoiCodec.h"
 #include "ui/UIActionBox.h"
 #include "drivers/common.h"
@@ -45,6 +47,20 @@ namespace UI {
         if (QoiCodec::instance().decode_video_routine()) {
             lv_obj_invalidate(canvas);
         }
+    }
+
+    static void _anim_canvas_change_bind_cb(struct _lv_anim_t *anim) {
+        anim_canvas_bind_asset((lv_obj_t *) anim->var, current_asset, true);
+        anim_canvas_update((lv_obj_t *) anim->var);
+        auto a = anim_create((lv_obj_t *) anim->var, anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, anim->time);
+        lv_anim_start(&a);
+    }
+
+    void anim_canvas_change_bind(lv_obj_t *canvas, std::string asset_name, uint32_t time, uint32_t delay) {
+        current_asset = std::move(asset_name);
+        auto a = anim_create(canvas, anim_fade, LV_OPA_COVER, LV_OPA_TRANSP, time, delay, 0, 0,
+                             _anim_canvas_change_bind_cb);
+        lv_anim_start(&a);
     }
 
     std::string get_asset_path(std::string &asset_name) {

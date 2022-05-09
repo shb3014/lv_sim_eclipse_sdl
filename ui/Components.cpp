@@ -31,8 +31,8 @@ namespace UI {
         ui->fade_in();
     }
 
-    void BasicText::update(const char *content, bool anim_on) {
-        if (text.empty() || text != content) {
+    void BasicText::update(const char *content, bool anim_on, bool force) {
+        if (text.empty() || text != content || force) {
             text = content;
             if (anim_on) {
                 auto a = anim_create(label, anim_fade, LV_OPA_COVER, LV_OPA_TRANSP, m_fade_out_t, 0, 0, 0, fade_cb,
