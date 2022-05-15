@@ -34,7 +34,7 @@ namespace UI {
 
     void UITime::start_routine() {
         anim_canvas_reset_asset();
-        anim_canvas_bind_asset(weather_anim, "weather");
+        anim_canvas_bind_asset(weather_anim, "weather/sunny.b");
 
         lv_obj_align_to(weather_anim, sep_line, LV_ALIGN_OUT_RIGHT_MID, 20, -6);
         Base::start_routine();
@@ -42,7 +42,7 @@ namespace UI {
 
     void UITime::update_info(bool force) {
 //    anim_canvas_bind_asset(weather_anim, weather);
-        anim_canvas_bind_asset(weather_anim, "weather");
+//        anim_canvas_bind_asset(weather_anim, "weather");
 
         time_t curtime;
         time(&curtime);
