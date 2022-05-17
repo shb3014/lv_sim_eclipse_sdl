@@ -8,9 +8,14 @@
 #include "Base.h"
 #include "cmath"
 
-#define WATER_TANK_SIZE             205
-#define WATER_TANK_ENV_COLOR        lv_color_make(0,0,0)
-#define WATER_TANK_VOLUME           90.0
+#define WATER_TANK_SIZE                 205
+#define WATER_TANK_ENV_COLOR            lv_color_make(0,0,0)
+#define WATER_TANK_VOLUME               90.0
+#define WATER_TANK_MIN_AMP              1
+#define WATER_TANK_MAX_AMP              10
+#define WATER_TANK_STABLE_UNIT_CNT      2
+#define WATER_TANK_FRONT_WAVE_COLOR     lv_color_make(51,187,211)
+#define WATER_TANK_BACK_WAVE_COLOR      lv_color_make(24,157,208)
 
 namespace UI {
 
@@ -101,6 +106,9 @@ namespace UI {
         }
 
     private:
+        void set_amp(int amp, bool update_unit = true, bool update = true);
+
+
         std::vector<lv_color_t> m_canvas_buf;
         lv_obj_t *m_canvas;
         lv_obj_t *m_bottom_label;
@@ -109,6 +117,10 @@ namespace UI {
 
         int m_target_y = 0;
         int m_current_y = WATER_TANK_SIZE;
+        int m_current_amp = 10;
+        int m_current_speed = 10;
+        uint16_t m_stable_cnt = 0;
+        int m_last_level = 0;
     };
 }
 

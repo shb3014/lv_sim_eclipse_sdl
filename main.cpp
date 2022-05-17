@@ -36,6 +36,7 @@
 #include "ui/UITest.h"
 #include "ui/UIText.h"
 #include "ui/TutorialUI.h"
+#include "ui/UIFluid.h"
 #include "utils/log.h"
 #include "lv_conf.h"
 #include "chrono"
@@ -104,7 +105,8 @@ void ui_thread() {
 //    auto ui = std::make_shared<UI::TuIntro>();
 //    auto ui = std::make_shared<UI::TuTouchBar>();
 //    auto ui = std::make_shared<UI::TuProv>();
-    auto ui = std::make_shared<UI::UITime>();
+//    auto ui = std::make_shared<UI::UITime>();
+    auto ui = std::make_shared<UI::UIFluid>();
     {
         std::lock_guard<std::recursive_mutex> lock(ui_mutex);
         current_ui = ui;
