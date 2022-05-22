@@ -7,6 +7,7 @@
 
 #include "Base.h"
 #include "cmath"
+#include "tools.h"
 
 #define WATER_TANK_SIZE                 205
 #define WATER_TANK_ENV_COLOR            lv_color_make(0,0,0)
@@ -29,22 +30,18 @@ namespace UI {
          */
         WaveUnit(int t_amp, int t_wl, int t_y_offset)
                 : amp(t_amp),
-                  wl(t_wl),
-                  y_offset(t_y_offset) {
+                  wl(t_wl) {
             data.reserve(t_wl);
             update_data();
         }
 
-        void set_amp(int t_amp, bool update = true);
+        void set_amp(int t_amp);
 
         void set_wl(int t_wl, bool update = true);
-
-        void set_y_offset(int t_y_offset, bool update = true);
 
         std::vector<int> data;
         int amp;
         int wl;   /* wave length */
-        int y_offset;
 
         void update_data();
     };
@@ -59,10 +56,9 @@ namespace UI {
             update_data();
         }
 
-        void move_hor(int dis, bool update = true);
+        void move_hor(int dis);
 
-        void set_y_offset(int offset, bool update_unit = true, bool update = true) {
-            unit.set_y_offset(offset, update_unit);
+        void set_y_offset(int offset, bool update = true) {
             if (update) {
                 update_data();
             }
@@ -72,11 +68,8 @@ namespace UI {
             unit.update_data();
         }
 
-        void set_amp(int amp, bool update_unit = true, bool update = true) {
-            unit.set_amp(amp, update_unit);
-            if (update) {
-                update_data();
-            }
+        void set_amp(int amp) {
+            unit.set_amp(amp);
         }
 
         WaveUnit unit;
@@ -85,6 +78,26 @@ namespace UI {
         int x_offset = 0;
 
         void update_data();
+    };
+
+    class CMask {
+    public:
+        typedef struct {
+            int start;
+            int end;
+        } bound_t;
+
+        explicit CMask(int radius) : m_radius(radius) {
+            update_data();
+        }
+
+        void update_data();
+
+        bound_t get_bound(int i);
+
+    private:
+        int m_radius;
+        std::vector<int> m_data;
     };
 
     class UIFluid : public Base {
@@ -106,9 +119,9 @@ namespace UI {
         }
 
     private:
-        void set_amp(int amp, bool update_unit = true, bool update = true);
+        void set_amp(int amp);
 
-
+        CMask m_mask;
         std::vector<lv_color_t> m_canvas_buf;
         lv_obj_t *m_canvas;
         lv_obj_t *m_bottom_label;
