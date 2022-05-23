@@ -87,7 +87,7 @@ namespace UI {
             : Base(),
               m_canvas(lv_canvas_create(m_scr)),
               m_bottom_label(lv_label_create(m_scr)),
-              m_top_label(m_scr, &ba_16),
+              m_top_label(m_scr, &ba_16,180,1000,800),
               m_mask(WATER_TANK_SIZE / 2),
               m_wave_front(10, 150, 10, WATER_TANK_SIZE, 0),
               m_wave_back(6, 120, 10, WATER_TANK_SIZE, 3) {
@@ -97,7 +97,7 @@ namespace UI {
         lv_canvas_fill_bg(m_canvas, WATER_TANK_ENV_COLOR, LV_OPA_COVER);
         label_set_style(m_bottom_label, &ba_30);
         lv_obj_align(m_bottom_label, LV_ALIGN_CENTER, 0, 50);
-        lv_obj_align(m_top_label.label, LV_ALIGN_TOP_MID, 0, 15);
+        lv_obj_align(m_top_label.label, LV_ALIGN_TOP_MID, 0, 20);
 #ifndef Ivy
         lv_obj_add_event_cb(m_scr, mouse_cb, LV_EVENT_CLICKED, this);
 #endif
