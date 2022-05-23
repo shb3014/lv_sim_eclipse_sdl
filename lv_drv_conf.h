@@ -95,15 +95,15 @@
 #endif
 
 #if USE_SDL || USE_SDL_GPU
-#  define SDL_HOR_RES     480
-#  define SDL_VER_RES     320
+#  define SDL_HOR_RES     LV_HOR_RES
+#  define SDL_VER_RES     LV_VER_RES
 
 /* Scale window by this factor (useful when simulating small screens) */
 #  define SDL_ZOOM        1
 
 /* Used to test true double buffering with only address changing.
  * Use 2 draw buffers, bith with SDL_HOR_RES x SDL_VER_RES size*/
-#  define SDL_DOUBLE_BUFFERED 0
+#  define SDL_DOUBL E_BUFFERED 0
 
 /*Eclipse: <SDL2/SDL.h>    Visual Studio: <SDL.h>*/
 #  define SDL_INCLUDE_PATH    <SDL2/SDL.h>

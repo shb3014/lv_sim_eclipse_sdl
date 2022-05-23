@@ -1,0 +1,42 @@
+//
+// Created by Gordon on 2022/5/23.
+//
+
+#ifndef LVGL_UIFLUIDASSIST_H
+#define LVGL_UIFLUIDASSIST_H
+
+#include "UIFluid.h"
+
+namespace UI {
+#define FLUID_BAR_WIDTH     8
+
+    class UIFluidAssist : public UIFluid {
+    public:
+        UIFluidAssist();
+
+        index_t get_index() override {
+            return UI_FLUID_ASSIST;
+        }
+
+        void render_wave() override;
+
+        void stable_cb(bool stable) override;
+
+        void update_assist_bar();
+
+    private:
+        lv_obj_t *m_bar_label;
+        lv_obj_t *m_bar_top;
+        lv_obj_t *m_bar_bottom;
+        lv_obj_t *m_bar_middle;
+        lv_point_t m_bar_points[4]{};
+
+        lv_coord_t m_assist_top = 0;
+        lv_coord_t m_assist_bottom = 0;
+        lv_coord_t m_assist_start_y = 0;
+
+    };
+}
+
+
+#endif //LVGL_UIFLUIDASSIST_H

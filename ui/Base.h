@@ -15,6 +15,7 @@ namespace UI {
         UI_PROGRESS,
         UI_DOUBLE_PROGRESS,
         UI_FLUID,
+        UI_FLUID_ASSIST,
         UI_WEATHER,
         UI_TIME,
         UI_DATE,

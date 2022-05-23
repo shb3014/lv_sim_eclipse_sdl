@@ -109,6 +109,20 @@ namespace UI {
     }
 
 //region style
+    LvDefaultStyles::LvDefaultStyles() {
+        lv_style_init(&style_bar_bg);
+        lv_style_set_border_color(&style_bar_bg, get_palette_rgb(palette_success));
+        lv_style_set_border_width(&style_bar_bg, 2);
+        lv_style_set_pad_all(&style_bar_bg, 6); /*To make the indicator smaller*/
+        lv_style_set_radius(&style_bar_bg, 6);
+        lv_style_set_anim_time(&style_bar_bg, 1000);
+
+        lv_style_init(&style_bar_indic);
+        lv_style_set_bg_opa(&style_bar_indic, LV_OPA_COVER);
+        lv_style_set_bg_color(&style_bar_indic, get_palette_rgb(palette_success));
+        lv_style_set_radius(&style_bar_indic, 3);
+    }
+
     lv_color_t get_palette_rgb(palette_t palette) {
         static const lv_color_t colors[] = {
                 LV_COLOR_MAKE(52, 192, 0), LV_COLOR_MAKE(245, 203, 38), LV_COLOR_MAKE(255, 153, 102),
@@ -130,28 +144,31 @@ namespace UI {
 
     void bar_set_default_style(lv_obj_t *bar) {
         lv_obj_remove_style_all(bar);  /*To have a clean start*/
-        static lv_style_t style_bg;
-        lv_style_init(&style_bg);
-        lv_style_set_border_color(&style_bg, get_palette_rgb(palette_success));
-        lv_style_set_border_width(&style_bg, 2);
-        lv_style_set_pad_all(&style_bg, 6); /*To make the indicator smaller*/
-        lv_style_set_radius(&style_bg, 6);
-        lv_style_set_anim_time(&style_bg, 1000);
 
-        static lv_style_t style_indic;
-        lv_style_init(&style_indic);
-        lv_style_set_bg_opa(&style_indic, LV_OPA_COVER);
-        lv_style_set_bg_color(&style_indic, get_palette_rgb(palette_success));
-        lv_style_set_radius(&style_indic, 3);
+        lv_obj_add_style(bar, &LvDefaultStyles::instance().style_bar_bg, 0);
+        lv_obj_add_style(bar, &LvDefaultStyles::instance().style_bar_indic, LV_PART_INDICATOR);
+    }
 
-        lv_obj_add_style(bar, &style_bg, 0);
-        lv_obj_add_style(bar, &style_indic, LV_PART_INDICATOR);
+    void line_set_style(lv_obj_t *line, lv_coord_t width, lv_color_t color, bool is_rounded) {
+        lv_obj_set_style_line_width(line, width, 0);
+        lv_obj_set_style_line_color(line, color, 0);
+        lv_obj_set_style_line_rounded(line, is_rounded, 0);
+    }
+
+    void ui_set_action(bool apply) {
     }
 
     void label_set_style(lv_obj_t *label, const lv_font_t *font, lv_color_t color, lv_text_align_t align) {
         lv_obj_set_style_text_font(label, font, 0);
         lv_obj_set_style_text_color(label, color, 0);
         lv_obj_set_style_text_align(label, align, 0);
+    }
+
+    void show_temp_text(const char *text, uint32_t period) {
+//        auto ui = std::make_shared<TempText>();
+//        ui->set_text(text);
+//        ui->set_period(period);
+//        LvglDriver::instance().load(ui);
     }
 }
 //endregion

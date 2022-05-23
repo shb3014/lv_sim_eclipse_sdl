@@ -37,6 +37,7 @@
 #include "ui/UIText.h"
 #include "ui/TutorialUI.h"
 #include "ui/UIFluid.h"
+#include "ui/UIFluidAssist.h"
 #include "utils/log.h"
 #include "lv_conf.h"
 #include "chrono"
@@ -106,7 +107,8 @@ void ui_thread() {
 //    auto ui = std::make_shared<UI::TuTouchBar>();
 //    auto ui = std::make_shared<UI::UIDate>();
 //    auto ui = std::make_shared<UI::UITime>();
-    auto ui = std::make_shared<UI::UIFluid>();
+//    auto ui = std::make_shared<UI::UIFluid>();
+    auto ui = std::make_shared<UI::UIFluidAssist>();
     {
         std::lock_guard<std::recursive_mutex> lock(ui_mutex);
         current_ui = ui;
@@ -174,8 +176,8 @@ int main(int argc, char **argv) {
 //    ui.update("Progress Test","upgrading",30);
 //    ui.update("Evolving","downloading /assets/test.txt",30,"total",10);
 
+    auto start = std::chrono::steady_clock::now();
     while (true) {
-        auto start = std::chrono::steady_clock::now();
         /* Periodically call the lv_task handler.
          * It could be done in a timer interrupt or an OS task too.*/
         {
@@ -184,11 +186,13 @@ int main(int argc, char **argv) {
             lv_timer_handler();
         }
         auto end = std::chrono::steady_clock::now();
-        uint32_t frame_t = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+        uint32_t frame_cnt = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+        double frame_t = (double)frame_cnt/1000;
         double target_t = 1;
         if ((double) frame_t < 41.6) {
             target_t = 41.6 - (double) frame_t;
         }
+        start = end;
         vTaskDelay(target_t);
 //        usleep((int) (target_t * 1000));
     }
@@ -255,10 +259,10 @@ static void hal_init(void)
   lv_indev_set_group(enc_indev, g);
 
   /*Set a cursor for the mouse*/
-  LV_IMG_DECLARE(mouse_cursor_icon); /*Declare the image file.*/
-  lv_obj_t * cursor_obj = lv_img_create(lv_scr_act()); /*Create an image object for the cursor */
-  lv_img_set_src(cursor_obj, &mouse_cursor_icon);           /*Set the image source*/
-  lv_indev_set_cursor(mouse_indev, cursor_obj);             /*Connect the image  object to the driver*/
+//  LV_IMG_DECLARE(mouse_cursor_icon); /*Declare the image file.*/
+//  lv_obj_t * cursor_obj = lv_img_create(lv_scr_act()); /*Create an image object for the cursor */
+//  lv_img_set_src(cursor_obj, &mouse_cursor_icon);           /*Set the image source*/
+//  lv_indev_set_cursor(mouse_indev, cursor_obj);             /*Connect the image  object to the driver*/
 }
 
 /**

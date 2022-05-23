@@ -8,8 +8,9 @@
 #include "Base.h"
 #include "cmath"
 #include "tools.h"
+#include "Components.h"
 
-#define WATER_TANK_SIZE                 205
+#define WATER_TANK_SIZE                 200
 #define WATER_TANK_ENV_COLOR            lv_color_make(0,0,0)
 #define WATER_TANK_VOLUME               90.0
 #define WATER_TANK_MIN_AMP              1
@@ -110,6 +111,16 @@ namespace UI {
 
         void routine() override;
 
+        void render_top();
+
+        virtual void render_wave();
+
+        void render_bottom();
+
+        virtual void render_text();
+
+        virtual void stable_cb(bool stable);
+
         void set_target_y_from_percent(double percent) {
             m_target_y = (int) std::round((double) WATER_TANK_SIZE * (1 - percent));
         }
@@ -118,20 +129,31 @@ namespace UI {
             m_target_y = y;
         }
 
-    private:
+    protected:
         void set_amp(int amp);
 
+#ifndef Ivy
+
+        static void mouse_cb(lv_event_t *event);
+
+#endif
+
+        lv_color_t m_front_wave_color = WATER_TANK_FRONT_WAVE_COLOR;
+        lv_color_t m_back_wave_color = WATER_TANK_BACK_WAVE_COLOR;
         CMask m_mask;
         std::vector<lv_color_t> m_canvas_buf;
         lv_obj_t *m_canvas;
         lv_obj_t *m_bottom_label;
+        BasicText m_top_label;
         Wave m_wave_front;
         Wave m_wave_back;
 
-        int m_target_y = 0;
+        int m_target_y = WATER_TANK_SIZE / 2;
         int m_current_y = WATER_TANK_SIZE;
         int m_current_amp = 10;
-        int m_current_speed = 10;
+        int m_current_speed = 6;
+        int m_wave_y_start = 0;
+        int m_wave_y_end = 0;
         uint16_t m_stable_cnt = 0;
         int m_last_level = 0;
     };

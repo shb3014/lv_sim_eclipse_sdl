@@ -8,13 +8,13 @@
 #include "lvgl/lvgl.h"
 #include "string"
 #include "utils/log.h"
+#include "memory"
 
 namespace UI {
 //#define PATH_ASSETS "C:/Users/sungaoran/Desktop/wsl/video/assets"
 //#define PATH_ASSETS "C:/Users/Gordon/Desktop/EmbededProjects/lv_sim_eclipse_sdl/assets"
 //#define PATH_ASSETS "D:/Ivy/device/assets/ouput"
 #define PATH_ASSETS "C:/Users/sungaoran/Desktop/Ivy/out"
-
 //region animation
     std::string get_asset_path(std::string &asset_name);
 
@@ -64,12 +64,42 @@ namespace UI {
 //endregion
 
 //region style
-//endregion
+/**
+ * default style for bar background
+ * @return
+ */
+
+    class LvDefaultStyles {
+    public:
+        //region Singleton
+        static LvDefaultStyles &instance() {
+            static std::shared_ptr<LvDefaultStyles> instance(new LvDefaultStyles());
+            return *instance;
+        }
+
+        LvDefaultStyles(const LvDefaultStyles &) = delete;
+
+        LvDefaultStyles(LvDefaultStyles &&) = delete;
+
+        LvDefaultStyles &operator=(const LvDefaultStyles &) = delete;
+
+        LvDefaultStyles &operator=(LvDefaultStyles &&) = delete;
+        //endregion
+
+        LvDefaultStyles();
+
+        lv_style_t style_bar_bg{};
+        lv_style_t style_bar_indic{};
+    };
 
     void bar_set_default_style(lv_obj_t *bar);
 
-    void ui_set_action(bool apply);
+    void line_set_style(lv_obj_t *line, lv_coord_t width, lv_color_t color, bool is_rounded = true);
 
+//endregion
+
+
+    void ui_set_action(bool apply);
 
     typedef enum {
         palette_success,
@@ -86,5 +116,7 @@ namespace UI {
 
     void label_set_style(lv_obj_t *label, const lv_font_t *font, lv_color_t color = lv_color_white(),
                          lv_text_align_t align = LV_TEXT_ALIGN_CENTER);
+
+    void show_temp_text(const char *text, uint32_t period = 3000);
 }
 #endif //UI_SANDBOX_TOOLS_H

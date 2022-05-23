@@ -16,7 +16,7 @@ add_definitions(-DLV_SIM)
 
 find_package(SDL2 REQUIRED SDL2)
 include_directories(${SDL2_INCLUDE_DIRS})
-add_executable(main main.cpp mouse_cursor_icon.c ${SOURCES} ${INCLUDES} ui/UITime.cpp ui/UITime.h ui/UIDate.cpp ui/UIDate.h ui/UIDoubleProgress.cpp ui/UIDoubleProgress.h ui/UIActionBox.cpp ui/UIActionBox.h ui/UILoading.cpp ui/UILoading.h ui/UIQrCode.cpp ui/UIQrCode.h ui/UIPlantStatus.cpp ui/UIPlantStatus.h tool/sys.cpp tool/sys.h ui/UITest.cpp ui/UITest.h ui/UIText.cpp ui/UIText.h ui/Components.cpp ui/Components.h ui/UIFluid.cpp ui/UIFluid.h)
+add_executable(main main.cpp mouse_cursor_icon.c ${SOURCES} ${INCLUDES} ui/UITime.cpp ui/UITime.h ui/UIDate.cpp ui/UIDate.h ui/UIDoubleProgress.cpp ui/UIDoubleProgress.h ui/UIActionBox.cpp ui/UIActionBox.h ui/UILoading.cpp ui/UILoading.h ui/UIQrCode.cpp ui/UIQrCode.h ui/UIPlantStatus.cpp ui/UIPlantStatus.h tool/sys.cpp tool/sys.h ui/UITest.cpp ui/UITest.h ui/UIText.cpp ui/UIText.h ui/Components.cpp ui/Components.h ui/UIFluid.cpp ui/UIFluid.h ui/UIFluidAssist.cpp ui/UIFluidAssist.h)
 add_compile_definitions(LV_CONF_INCLUDE_SIMPLE)
 target_link_libraries(main PRIVATE SDL2 )
 add_custom_target (run COMMAND ${EXECUTABLE_OUTPUT_PATH}/main)
