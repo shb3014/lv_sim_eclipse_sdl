@@ -32,6 +32,16 @@ namespace UI {
         auto ui = static_cast<TuIntro *>(timer->user_data);
         ui->next();
     }
+
+    void TuBase::fade_indicator(routable_indicator_part part, bool on, uint32_t time, uint32_t delay) {
+        if (on) {
+            set_routable_indicator_visible(true, part);
+        }
+        auto a = anim_create(m_routable_indicators[part], anim_fade, on ? LV_OPA_TRANSP : LV_OPA_COVER,
+                             on ? LV_OPA_COVER : LV_OPA_TRANSP, time, delay);
+        lv_anim_set_early_apply(&a, true);
+        lv_anim_start(&a);
+    }
     //endregion
 
     TuCanvasBase::TuCanvasBase()
@@ -285,5 +295,87 @@ namespace UI {
 
     void TuTuya::input_cb(input_t input) {
         Base::input_cb(input);
+    }
+
+    TempText::TempText()
+            : TuBase(),
+              m_text(m_scr, &ba_16) {
+        lv_obj_set_align(m_text.label, LV_ALIGN_CENTER);
+    }
+
+    void TempText::next() {
+        switch (m_current_step) {
+            case 0:
+                m_text.update(m_target_text.c_str());
+                break;
+            case 2: {
+                m_text.update("");
+            }
+            case 3: {
+#ifdef Ivy
+                if (m_next_ui == UI_NULL) {
+                    LvglDriver::instance().route_to_default();
+                } else {
+                    LvglDriver::instance().load(m_next_ui);
+                }
+#else
+                if (m_next_ui == UI_NULL) {
+                    break;
+                } else {
+                    auto ui = std::make_shared<TuWater>();
+                    ui->set_start(true);
+                }
+#endif
+            }
+        }
+        m_current_step++;
+    }
+
+    TuWater::TuWater() : TuCanvasBase() {
+        m_input_used = true;
+        lv_obj_align(m_top_text.label, LV_ALIGN_TOP_MID, 0, 15);
+    }
+
+    void TuWater::next() {
+        switch (m_current_step) {
+            case 0: {
+                m_top_text.update("Nice! Let's now prepare for the plant");
+                break;
+            }
+            case 1: {
+                m_top_text.update(get_colored_str("Remove the pot before adding water", palette_notice).c_str());
+//                m_top_text.update("Please add 20mL of Water")
+                anim_canvas_bind_asset(m_canvas, "tu/tu_water");
+                anim_canvas_update(m_canvas);
+                lv_obj_align(m_canvas, LV_ALIGN_CENTER, -5, 10);
+                auto a = anim_create(m_canvas, anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, 1000, 1500);
+                lv_anim_start(&a);
+                lv_timer_set_period(m_timer, 4000);
+                break;
+            }
+            case 2: {
+                fade_indicator(right, true);
+                break;
+            }
+            case 3: {
+                if (!m_right_touched) {
+                    return;
+                }
+
+            }
+        }
+        m_current_step++;
+    }
+
+    void TuWater::input_cb(input_t input) {
+        Base::input_cb(input);
+        if (input == UI_INPUT_RIGHT) {
+            m_right_touched = true;
+        }
+    }
+
+    TuWaterAssist::TuWaterAssist() : UIFluidAssist(150) {
+        lv_obj_align(m_bottom_label, LV_ALIGN_CENTER, 0, 30);
+
     }
 }

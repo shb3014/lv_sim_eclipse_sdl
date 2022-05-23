@@ -7,6 +7,7 @@
 
 #include "Base.h"
 #include "Components.h"
+#include "UIFluidAssist.h"
 
 #define TU_INTRO_DELAY      6500
 
@@ -22,6 +23,8 @@ namespace UI {
         static void timer_cb(lv_timer_t *timer);
 
         virtual void next() = 0;
+
+        void fade_indicator(routable_indicator_part part, bool on, uint32_t time = 1000, uint32_t delay = 0);
 
     protected:
         lv_timer_t *m_timer;
@@ -107,6 +110,66 @@ namespace UI {
     private:
         BasicText m_sub_text;
         bool m_left_touched = false;
+    };
+
+    class TempText : public TuBase {
+    public:
+        TempText();
+
+        index_t get_index() override {
+            return UI_TEMP_TEXT;
+        }
+
+        void set_text(const char *content) {
+            m_target_text = content;
+        }
+
+        void set_period(uint32_t period) {
+            lv_timer_set_period(m_timer, period);
+        }
+
+        void set_next_ui(index_t ui) {
+            m_next_ui = ui;
+        }
+
+        void next() override;
+
+    private:
+        BasicText m_text;
+        std::string m_target_text;
+        index_t m_next_ui = UI_NULL;
+    };
+
+    class TuWater : public TuCanvasBase {
+    public:
+        TuWater();
+
+        index_t get_index() override {
+            return TU_WATER;
+        }
+
+        void input_cb(input_t input) override;
+
+        void next() override;
+
+    private:
+        bool m_right_touched = false;
+    };
+
+    class TuWaterAssist : public UIFluidAssist {
+    public:
+        TuWaterAssist();
+
+        uint16_t get_target_level() override {
+            return 30;
+        }
+
+        uint16_t get_target_range() override {
+            return 5;
+        }
+
+//        void input_cb(input_t input) override;
+
     };
 }
 

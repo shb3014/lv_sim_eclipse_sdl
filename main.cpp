@@ -108,8 +108,11 @@ void ui_thread() {
 //    auto ui = std::make_shared<UI::UIDate>();
 //    auto ui = std::make_shared<UI::UITime>();
 //    auto ui = std::make_shared<UI::UIFluid>();
-    auto ui = std::make_shared<UI::UIFluidAssist>();
+//    auto ui = std::make_shared<UI::UIFluidAssist>();
+    auto ui = std::make_shared<UI::TuWaterAssist>();
+//    auto ui = std::make_shared<UI::TuWater>();
     {
+
         std::lock_guard<std::recursive_mutex> lock(ui_mutex);
         current_ui = ui;
         ui->set_start(true);

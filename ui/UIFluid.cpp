@@ -73,8 +73,8 @@ namespace UI {
             lv_point_t point;
             lv_indev_get_point(indev, &point);
             auto *ui = (UIFluid *) event->user_data;
-            int start = (LV_VER_RES - WATER_TANK_SIZE) / 2;
-            int end = start + WATER_TANK_SIZE;
+            int start = (LV_VER_RES - ui->get_tank_size()) / 2;
+            int end = start + ui->get_tank_size();
             int y = std::min((int) point.y, end) - start;
             y = std::max(1, y);
             ui->set_target_y(y);
@@ -83,16 +83,19 @@ namespace UI {
 
 #endif
 
-    UIFluid::UIFluid()
+    UIFluid::UIFluid(int tank_size)
             : Base(),
+              m_tank_size(tank_size),
               m_canvas(lv_canvas_create(m_scr)),
               m_bottom_label(lv_label_create(m_scr)),
-              m_top_label(m_scr, &ba_16,180,1000,800),
-              m_mask(WATER_TANK_SIZE / 2),
-              m_wave_front(10, 150, 10, WATER_TANK_SIZE, 0),
-              m_wave_back(6, 120, 10, WATER_TANK_SIZE, 3) {
-        m_canvas_buf.resize(LV_CANVAS_BUF_SIZE_TRUE_COLOR(WATER_TANK_SIZE, WATER_TANK_SIZE));
-        lv_canvas_set_buffer(m_canvas, m_canvas_buf.data(), WATER_TANK_SIZE, WATER_TANK_SIZE, LV_IMG_CF_TRUE_COLOR);
+              m_top_label(m_scr, &ba_16, 180, 1000, 800),
+              m_mask(m_tank_size / 2),
+              m_wave_front(10, 150, 10, m_tank_size, 0),
+              m_wave_back(6, 120, 10, m_tank_size, 3),
+              m_target_y(m_tank_size / 2),
+              m_current_y(m_tank_size) {
+        m_canvas_buf.resize(LV_CANVAS_BUF_SIZE_TRUE_COLOR(m_tank_size, m_tank_size));
+        lv_canvas_set_buffer(m_canvas, m_canvas_buf.data(), m_tank_size, m_tank_size, LV_IMG_CF_TRUE_COLOR);
         lv_obj_align(m_canvas, LV_ALIGN_CENTER, 0, 0);
         lv_canvas_fill_bg(m_canvas, WATER_TANK_ENV_COLOR, LV_OPA_COVER);
         label_set_style(m_bottom_label, &ba_30);
@@ -106,7 +109,7 @@ namespace UI {
     void UIFluid::set_amp(int amp) {
         int front_amp;
         int back_amp;
-        int max_amp = std::min(m_current_y, WATER_TANK_SIZE - m_current_y);
+        int max_amp = std::min(m_current_y, m_tank_size - m_current_y);
         if (amp > max_amp) amp = max_amp;
         if (amp < WATER_TANK_MIN_AMP) amp = WATER_TANK_MIN_AMP;
         if (amp > WATER_TANK_MAX_AMP) amp = WATER_TANK_MAX_AMP;
@@ -160,9 +163,9 @@ namespace UI {
         render_wave();
         render_bottom();
 
-        if (m_current_amp > WATER_TANK_MIN_AMP + 1){
+        if (m_current_amp > WATER_TANK_MIN_AMP + 1) {
             stable_cb(false);
-        }else{
+        } else {
             stable_cb(true);
         }
 
@@ -176,13 +179,13 @@ namespace UI {
     }
 
     void UIFluid::render_top() {
-        int index_start = m_wave_y_start * WATER_TANK_SIZE;
+        int index_start = m_wave_y_start * m_tank_size;
         lv_color_fill(m_canvas_buf.data(), WATER_TANK_ENV_COLOR, index_start);
     }
 
     void UIFluid::render_wave() {
-        int index_start = m_wave_y_start * WATER_TANK_SIZE;
-        for (int x = 0; x < WATER_TANK_SIZE; x++) {
+        int index_start = m_wave_y_start * m_tank_size;
+        for (int x = 0; x < m_tank_size; x++) {
             CMask::bound_t bound = m_mask.get_bound(x);
             if (bound.start > m_wave_y_end || m_wave_y_start > bound.end) {
                 continue;
@@ -192,7 +195,7 @@ namespace UI {
             int back_y = m_wave_back.data[x];
             int front_y = m_wave_front.data[x];
             for (int y = start - m_wave_y_start; y < end - m_wave_y_start; y++) {
-                lv_color_t *pix = &m_canvas_buf[index_start + y * WATER_TANK_SIZE + x];
+                lv_color_t *pix = &m_canvas_buf[index_start + y * m_tank_size + x];
 
                 /* render wave */
                 if (back_y > front_y) {
@@ -219,12 +222,12 @@ namespace UI {
     }
 
     void UIFluid::render_bottom() {
-        for (int y = m_wave_y_end; y < WATER_TANK_SIZE; y++) {
+        for (int y = m_wave_y_end; y < m_tank_size; y++) {
             CMask::bound_t bound = m_mask.get_bound(y);
-            lv_color_fill(m_canvas_buf.data() + WATER_TANK_SIZE * y + bound.start, m_front_wave_color,
+            lv_color_fill(m_canvas_buf.data() + m_tank_size * y + bound.start, m_front_wave_color,
                           bound.end - bound.start);
-            if (y < 0 || y > WATER_TANK_SIZE ||
-                WATER_TANK_SIZE * y + bound.start + bound.end - bound.start > WATER_TANK_SIZE * WATER_TANK_SIZE) {
+            if (y < 0 || y > m_tank_size ||
+                m_tank_size * y + bound.start + bound.end - bound.start > m_tank_size * m_tank_size) {
                 printf("???\n");
             }
         }

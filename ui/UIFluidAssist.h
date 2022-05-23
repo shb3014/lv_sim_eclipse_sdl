@@ -12,11 +12,13 @@ namespace UI {
 
     class UIFluidAssist : public UIFluid {
     public:
-        UIFluidAssist();
+        UIFluidAssist(int tank_size=WATER_TANK_SIZE);
 
         index_t get_index() override {
             return UI_FLUID_ASSIST;
         }
+
+        void start_routine() override;
 
         void render_wave() override;
 
@@ -24,7 +26,11 @@ namespace UI {
 
         void update_assist_bar();
 
-    private:
+        virtual uint16_t get_target_level();
+
+        virtual uint16_t get_target_range();
+
+    protected:
         lv_obj_t *m_bar_label;
         lv_obj_t *m_bar_top;
         lv_obj_t *m_bar_bottom;

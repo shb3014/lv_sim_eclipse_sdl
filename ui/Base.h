@@ -26,11 +26,14 @@ namespace UI {
         UI_QR,
         UI_TEST,
         UI_TEXT,
+        UI_TEMP_TEXT,
 
         TU_INTRO,
         TU_TOUCH_BAR,
         TU_PROV,
-        TU_TUYA
+        TU_TUYA,
+        TU_PLANT,
+        TU_WATER
     } index_t;
 
     typedef enum {

@@ -103,7 +103,7 @@ namespace UI {
 
     class UIFluid : public Base {
     public:
-        UIFluid();
+        explicit UIFluid(int tank_size=WATER_TANK_SIZE);
 
         index_t get_index() override {
             return UI_FLUID;
@@ -122,14 +122,19 @@ namespace UI {
         virtual void stable_cb(bool stable);
 
         void set_target_y_from_percent(double percent) {
-            m_target_y = (int) std::round((double) WATER_TANK_SIZE * (1 - percent));
+            m_target_y = (int) std::round((double) m_tank_size * (1 - percent));
         }
 
         void set_target_y(int y) {
             m_target_y = y;
         }
 
+        int get_tank_size() const{
+            return m_tank_size;
+        }
+
     protected:
+        const int m_tank_size;
         void set_amp(int amp);
 
 #ifndef Ivy
@@ -148,8 +153,8 @@ namespace UI {
         Wave m_wave_front;
         Wave m_wave_back;
 
-        int m_target_y = WATER_TANK_SIZE / 2;
-        int m_current_y = WATER_TANK_SIZE;
+        int m_target_y ;
+        int m_current_y;
         int m_current_amp = 10;
         int m_current_speed = 6;
         int m_wave_y_start = 0;
