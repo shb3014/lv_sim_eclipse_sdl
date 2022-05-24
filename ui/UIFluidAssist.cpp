@@ -9,6 +9,7 @@ namespace UI {
     UIFluidAssist::UIFluidAssist(int tank_size)
             : UIFluid(tank_size),
               m_bar_label(lv_label_create(m_scr)),
+              m_middle_label(lv_label_create(m_scr)),
               m_bar_top(lv_line_create(m_scr)),
               m_bar_bottom(lv_line_create(m_scr)),
               m_bar_middle(lv_line_create(m_scr)) {
@@ -19,6 +20,8 @@ namespace UI {
         label_set_style(m_bar_label, &lv_font_montserrat_12);
         lv_label_set_text_fmt(m_bar_label, "%s", LV_SYMBOL_PLAY);
         lv_obj_add_flag(m_bar_label, LV_OBJ_FLAG_HIDDEN);
+        label_set_style(m_middle_label, &ba_30);
+        lv_obj_align(m_middle_label, LV_ALIGN_CENTER, 0, 0);
 
         lv_coord_t x = (LV_HOR_RES - m_tank_size) / 2 - 10;
         m_assist_start_y = (LV_VER_RES - m_tank_size) / 2;
@@ -77,23 +80,23 @@ namespace UI {
         /* todo overflow */
         if (stable) {
             lv_obj_add_flag(m_bar_label, LV_OBJ_FLAG_HIDDEN);
-            lv_obj_clear_flag(m_bottom_label, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_clear_flag(m_middle_label, LV_OBJ_FLAG_HIDDEN);
             if (m_current_y > m_assist_bottom) {
-                lv_label_set_text(m_bottom_label, "Not Yet");
-                lv_obj_set_style_text_color(m_bottom_label, get_palette_rgb(palette_notice), 0);
+                lv_label_set_text(m_middle_label, "Not Yet");
+                lv_obj_set_style_text_color(m_middle_label, get_palette_rgb(palette_notice), 0);
             } else if (m_current_y < m_assist_top) {
-                lv_label_set_text(m_bottom_label, "Too Much");
-                lv_obj_set_style_text_color(m_bottom_label, get_palette_rgb(palette_warning), 0);
+                lv_label_set_text(m_middle_label, "Too Much");
+                lv_obj_set_style_text_color(m_middle_label, get_palette_rgb(palette_warning), 0);
                 lv_draw_arc_dsc_t desc = {.color=get_palette_rgb(palette_warning), .width=1, .opa=LV_OPA_COVER};
             } else {
-                lv_label_set_text(m_bottom_label, "Good");
-                lv_obj_set_style_text_color(m_bottom_label, lv_color_white(), 0);
+                lv_label_set_text(m_middle_label, "Good");
+                lv_obj_set_style_text_color(m_middle_label, lv_color_white(), 0);
             }
         } else {
             lv_obj_clear_flag(m_bar_label, LV_OBJ_FLAG_HIDDEN);
             lv_obj_set_pos(m_bar_label, (LV_HOR_RES - m_tank_size) / 2 - 28,
                            m_current_y + (LV_VER_RES - m_tank_size) / 2 - 8);
-            lv_obj_add_flag(m_bottom_label, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_add_flag(m_middle_label, LV_OBJ_FLAG_HIDDEN);
         }
     }
 }

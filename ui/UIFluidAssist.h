@@ -12,7 +12,7 @@ namespace UI {
 
     class UIFluidAssist : public UIFluid {
     public:
-        UIFluidAssist(int tank_size=WATER_TANK_SIZE);
+        explicit UIFluidAssist(int tank_size=WATER_TANK_SIZE);
 
         index_t get_index() override {
             return UI_FLUID_ASSIST;
@@ -32,6 +32,7 @@ namespace UI {
 
     protected:
         lv_obj_t *m_bar_label;
+        lv_obj_t *m_middle_label;
         lv_obj_t *m_bar_top;
         lv_obj_t *m_bar_bottom;
         lv_obj_t *m_bar_middle;

@@ -160,6 +160,10 @@ namespace UI {
     public:
         TuWaterAssist();
 
+        void start_routine() override;
+
+        void stable_cb(bool stable) override;
+
         uint16_t get_target_level() override {
             return 30;
         }
@@ -168,9 +172,44 @@ namespace UI {
             return 5;
         }
 
-//        void input_cb(input_t input) override;
+        static void timer_cb(lv_timer_t *timer);
 
+        void next();
+
+        void clear() override;
+
+//        void input_cb(input_t input) override;
+    private:
+        BasicText m_bottom_text;
+        lv_timer_t *m_timer = nullptr;
+        int m_current_step = 0;
+        bool m_right_touched = false;
     };
+
+    class TuPlantSelect : public TuCanvasBase {
+    public:
+        TuPlantSelect();
+
+        index_t get_index() override {
+            return TU_PLANT;
+        }
+
+        void next() override;
+    };
+
+    class TuFinal : public TuBase {
+    public:
+        TuFinal();
+
+        index_t get_index() override {
+            return TU_INTRO;
+        }
+
+        void next() override;
+    private:
+        BasicText m_text;
+    };
+
 }
 
 

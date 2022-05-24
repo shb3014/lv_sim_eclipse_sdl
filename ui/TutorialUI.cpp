@@ -15,16 +15,18 @@
 namespace UI {
 
     //region TuBase
-    TuBase::TuBase()
-            : m_timer(lv_timer_create(timer_cb, TU_INTRO_DELAY, this)) {}
+    TuBase::TuBase() {}
 
     void TuBase::start_routine() {
         Base::start_routine();
+        m_timer = lv_timer_create(timer_cb, TU_INTRO_DELAY, this);
         lv_timer_ready(m_timer);
     }
 
     void TuBase::clear() {
-        lv_timer_del(m_timer);
+        if (m_timer) {
+            lv_timer_del(m_timer);
+        }
         Base::clear();
     }
 
@@ -120,7 +122,8 @@ namespace UI {
     //endregion
 
     TuTouchBar::TuTouchBar() : TuCanvasBase() {
-        anim_canvas_bind_asset(m_canvas, "tu_ivy");
+        m_input_used = true;
+        anim_canvas_bind_asset(m_canvas, "tu/tu_ivy");
         anim_canvas_update(m_canvas);
 
 
@@ -147,11 +150,14 @@ namespace UI {
     }
 
     void TuTouchBar::next() {
-        switch (m_current_step++) {
-            case 0:
+        switch (m_current_step) {
+            case 0: {
                 m_top_text.update("There are two touch bars");
+                auto a = anim_create(m_canvas, anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, 1000, 1000);
+                lv_anim_start(&a);
                 lv_timer_set_period(m_timer, 3000);
                 break;
+            }
             case 1: {
                 for (auto &circle: m_circles) {
                     lv_obj_clear_flag(circle, LV_OBJ_FLAG_HIDDEN);
@@ -163,7 +169,7 @@ namespace UI {
                 break;
             }
             case 2: {
-                m_top_text.update((get_colored_str("Yellow", palette_notice) + " dots imply intractable bars").c_str());
+                m_top_text.update((get_colored_str("Yellow", palette_notice) + " dots imply interactive bars").c_str());
                 for (auto &circle: m_circles) {
                     lv_obj_clear_flag(circle, LV_OBJ_FLAG_HIDDEN);
                     auto a = anim_create(circle, anim_fade, LV_OPA_COVER, LV_OPA_TRANSP, 2000);
@@ -183,15 +189,12 @@ namespace UI {
                 break;
             }
             case 4: {
+                lv_timer_set_period(m_timer, 10);
                 m_bottom_text.update("Now, let's try touch the left bar");
-                auto a = anim_create(m_routable_indicators[0], anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, 1500, 2000);
-                lv_anim_start(&a);
+                fade_indicator(left, false, 1000, 2000);
                 break;
             }
             case 5: {
-                while (true) {
-                    printf("wait...\n");
-                }
                 break;
             }
             case 6: {
@@ -207,10 +210,7 @@ namespace UI {
               m_sub_text_a(m_scr, &ba_16, 80),
               m_sub_text_b(m_scr, &ba_16, 210),
               m_sub_text_c(m_scr, &ba_30, 10) {
-        anim_canvas_bind_asset(m_canvas, "tu_app");
-        anim_canvas_update(m_canvas);
-        lv_obj_add_flag(m_canvas, LV_OBJ_FLAG_HIDDEN);
-        lv_obj_align(m_canvas, LV_ALIGN_CENTER, 0, 30);
+        m_input_used = true;
     }
 
     void TuProv::next() {
@@ -229,11 +229,15 @@ namespace UI {
                 lv_obj_align_to(m_sub_text_b.label, m_top_text.label, LV_ALIGN_OUT_BOTTOM_MID, 55, 15);
                 lv_obj_align_to(m_sub_text_c.label, m_sub_text_a.label, LV_ALIGN_OUT_RIGHT_MID, 0, 0);
                 lv_obj_set_style_text_line_space(m_sub_text_b.label, 10, 0);
-                m_bottom_text.update("Touch right to next step");
-                lv_obj_set_style_opa(m_canvas, LV_OPA_TRANSP, 0);
-                lv_obj_clear_flag(m_canvas, LV_OBJ_FLAG_HIDDEN);
+                anim_canvas_bind_asset(m_canvas, "tu/tu_app");
+                anim_canvas_update(m_canvas);
+                lv_obj_align(m_canvas, LV_ALIGN_CENTER, 0, 30);
                 auto a = anim_create(m_canvas, anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, 1000, 1000);
                 lv_anim_start(&a);
+                lv_timer_set_period(m_timer, 3000);
+                break;
+            }
+            case 2: {
                 set_routable_indicator_visible(true, right);
                 lv_obj_align(m_routable_indicators[1], LV_ALIGN_RIGHT_MID, -15, -20);
                 auto a2 = anim_create(m_routable_indicators[1], anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, 1000, 1000);
@@ -374,8 +378,102 @@ namespace UI {
         }
     }
 
-    TuWaterAssist::TuWaterAssist() : UIFluidAssist(150) {
+    TuWaterAssist::TuWaterAssist()
+            : UIFluidAssist(150),
+              m_bottom_text(m_scr, &ba_16) {
         lv_obj_align(m_bottom_label, LV_ALIGN_CENTER, 0, 30);
+        lv_obj_align(m_middle_label, LV_ALIGN_CENTER, 0, -10);
+        lv_obj_align(m_bottom_text.label, LV_ALIGN_BOTTOM_MID, 0, -20);
+    }
 
+    void TuWaterAssist::start_routine() {
+        UIFluidAssist::start_routine();
+        m_timer = lv_timer_create(timer_cb, 5000, this);
+        lv_timer_ready(m_timer);
+    }
+
+    void TuWaterAssist::stable_cb(bool stable) {
+        UIFluidAssist::stable_cb(stable);
+        if (stable && m_current_y <= m_assist_bottom && m_current_y >= m_assist_top) {
+            m_right_touched = true;
+        }
+    }
+
+    void TuWaterAssist::timer_cb(lv_timer_t *timer) {
+        auto ui = static_cast<TuWaterAssist *>(timer->user_data);
+        ui->next();
+    }
+
+    void TuWaterAssist::next() {
+        switch (m_current_step) {
+            case 0: {
+                m_bottom_text.update("Touch right to the next step", true, false, 2000);
+                set_routable_indicator_visible(true, right);
+                auto a = anim_create(m_routable_indicators[right], anim_fade, LV_OPA_TRANSP,
+                                     LV_OPA_COVER, 1000, 3500);
+                lv_anim_set_early_apply(&a, true);
+                lv_anim_start(&a);
+                lv_timer_set_period(m_timer, 1);
+                m_right_touched = false;
+                break;
+            }
+            case 1: {
+                if (!m_right_touched) {
+                    return;
+                }
+                break;
+            }
+        }
+        m_current_step++;
+    }
+
+    void TuWaterAssist::clear() {
+        if (m_timer) {
+            lv_timer_del(m_timer);
+        }
+        Base::clear();
+    }
+
+    TuPlantSelect::TuPlantSelect() : TuCanvasBase() {
+        lv_obj_align(m_top_text.label, LV_ALIGN_TOP_MID, 0, 15);
+
+    }
+
+    void TuPlantSelect::next() {
+        switch (m_current_step) {
+            case 0: {
+                m_top_text.update("Now put the inner-pot in");
+                anim_canvas_bind_asset(m_canvas, "tu/tu_ivy_2");
+                anim_canvas_update(m_canvas);
+                lv_obj_align(m_canvas, LV_ALIGN_CENTER, -5, 10);
+                auto a = anim_create(m_canvas, anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, 1000, 1500);
+                lv_anim_start(&a);
+            }
+        }
+        m_current_step++;
+    }
+
+    TuFinal::TuFinal()
+            : TuBase(),
+              m_text(m_scr, &ba_30) {
+        lv_obj_align(m_text.label, LV_ALIGN_CENTER, 0, 0);
+    }
+
+    void TuFinal::next() {
+        switch (m_current_step) {
+            case 0: {
+                lv_timer_set_period(m_timer, 4000);
+                m_text.update("Congratulations!");
+                break;
+            }
+            case 1: {
+                m_text.update("You have completed the tutorial!");
+                break;
+            }
+            case 2:{
+                break;
+            }
+        }
+        m_current_step++;
     }
 }

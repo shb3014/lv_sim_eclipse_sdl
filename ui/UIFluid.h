@@ -149,7 +149,7 @@ namespace UI {
         std::vector<lv_color_t> m_canvas_buf;
         lv_obj_t *m_canvas;
         lv_obj_t *m_bottom_label;
-        BasicText m_top_label;
+        BasicText m_top_text;
         Wave m_wave_front;
         Wave m_wave_back;
 
