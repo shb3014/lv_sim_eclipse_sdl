@@ -186,6 +186,7 @@ namespace UI {
         bool m_right_touched = false;
     };
 
+
     class TuPlantSelect : public TuCanvasBase {
     public:
         TuPlantSelect();
@@ -195,7 +196,11 @@ namespace UI {
         }
 
         void next() override;
+
+    private:
+        BasicText m_middle_text;
     };
+
 
     class TuFinal : public TuBase {
     public:

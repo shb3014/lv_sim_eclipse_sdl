@@ -109,8 +109,8 @@ void ui_thread() {
 //    auto ui = std::make_shared<UI::UITime>();
 //    auto ui = std::make_shared<UI::UIFluid>();
 //    auto ui = std::make_shared<UI::UIFluidAssist>();
-    auto ui = std::make_shared<UI::TuWaterAssist>();
-//    auto ui = std::make_shared<UI::TuPlantSelect>();
+//    auto ui = std::make_shared<UI::TuWaterAssist>();
+    auto ui = std::make_shared<UI::TuPlantSelect>();
 //    auto ui = std::make_shared<UI::TuFinal>();
 //    auto ui = std::make_shared<UI::TuWater>();
     {

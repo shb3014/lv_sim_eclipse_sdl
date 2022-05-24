@@ -433,10 +433,12 @@ namespace UI {
         }
         Base::clear();
     }
-
-    TuPlantSelect::TuPlantSelect() : TuCanvasBase() {
+    TuPlantSelect::TuPlantSelect()
+            : TuCanvasBase(),
+              m_middle_text(m_scr, &ba_30) {
         lv_obj_align(m_top_text.label, LV_ALIGN_TOP_MID, 0, 15);
-
+        lv_obj_align(m_middle_text.label, LV_ALIGN_CENTER, 0, -30);
+        lv_obj_align_to(m_bottom_text.label,m_middle_text.label,LV_ALIGN_OUT_BOTTOM_MID,0,30);
     }
 
     void TuPlantSelect::next() {
@@ -448,6 +450,20 @@ namespace UI {
                 lv_obj_align(m_canvas, LV_ALIGN_CENTER, -5, 10);
                 auto a = anim_create(m_canvas, anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, 1000, 1500);
                 lv_anim_start(&a);
+                break;
+            }
+            case 1: {
+                lv_timer_set_period(m_timer, 5000);
+                auto a = anim_create(m_canvas, anim_fade, LV_OPA_COVER, LV_OPA_TRANSP, 1000);
+                lv_anim_start(&a);
+                m_top_text.update("");
+                m_middle_text.update(("Please select your plant in "+ get_colored_str("Tuya APP",palette_notice)).c_str());
+                m_bottom_text.update("After the plant is selected,\nthis page will be automatically switched.");
+                break;
+            }
+            case 2: {
+//                auto ui = make<TuFinal>();
+//                LvglDriver::instance().load(ui);
             }
         }
         m_current_step++;
