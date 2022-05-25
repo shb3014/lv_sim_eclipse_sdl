@@ -30,6 +30,8 @@ namespace UI {
 
         void update_selected_style(bool selected) const;
 
+        void update_color(lv_color_t color) const;
+
     private:
         lv_obj_t *m_value_label;
         lv_obj_t *m_name_label;
@@ -109,17 +111,23 @@ namespace UI {
             battery,
         } sensor_index_t;
 
+        typedef struct{
+            std::string content;
+            lv_color_t color;
+        }bubble_info_t;
+
         StatusCard &get_card_by_index(sensor_index_t index) {
             return m_cards[index];
         }
+        void start_routine() override;
 
         void routine() override;
 
+        void update();
+
         void select_index(int index);
 
-        std::string get_content_by_index(int index);
-
-        lv_color_t get_name_color_by_index(int index);
+        bubble_info_t get_bubble_info_by_index(int index);
 
         void input_cb(input_t input) override;
 
@@ -130,13 +138,19 @@ namespace UI {
         void clear() override;
 
     private:
+
+#ifndef Ivy
+
+        static void mouse_cb(lv_event_t *event);
+
+#endif
         void update_selection_cb(int index);
 
         static lv_coord_t get_pointer_x_by_index(int index);
 
         void update_bubble_status(const char *content, lv_color_t color, lv_coord_t x);
 
-        void move_bubble();
+        void move_bubble() const;
 
         void select_next();
 
@@ -159,7 +173,7 @@ namespace UI {
         area_select_t last_area_select = no_selection;
         area_select_t current_area_select = no_selection;
 
-        lv_timer_t *m_value_update_timer;
+        lv_timer_t *m_value_update_timer = nullptr;
     };
 }
 

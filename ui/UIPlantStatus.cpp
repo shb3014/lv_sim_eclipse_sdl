@@ -42,7 +42,7 @@ namespace UI {
             lv_label_set_text(m_value_label, value_str.c_str());
             if (value_str.length() >= 5) {
                 lv_obj_set_style_text_font(m_value_label, &ba_16, 0);
-            lv_obj_align(m_value_label, LV_ALIGN_TOP_MID, 0, 14);
+                lv_obj_align(m_value_label, LV_ALIGN_TOP_MID, 0, 14);
             } else if (value_str.length() > 3) {
                 lv_obj_set_style_text_font(m_value_label, &ba_30, 0);
                 lv_obj_align(m_value_label, LV_ALIGN_TOP_MID, 0, 10);
@@ -59,6 +59,10 @@ namespace UI {
         lv_obj_set_size(m_card, DEFAULT_CARD_W + 2 * selected - 2, DEFAULT_CARD_H + 2 * selected - 2);
     }
 
+    void StatusCard::update_color(lv_color_t color) const {
+        lv_obj_set_style_border_color(m_card, color, 0);
+    }
+
     ChatBubble::ChatBubble(lv_obj_t *parent, lv_coord_t bubble_w, lv_coord_t bubble_h, lv_coord_t pointer_w,
                            lv_coord_t pointer_h)
             : m_space(lv_obj_create(parent)),
@@ -68,11 +72,15 @@ namespace UI {
 
         m_card = lv_obj_create(m_space);
         lv_obj_set_style_radius(m_card, 20, 0);
+        lv_obj_clear_flag(m_card, LV_OBJ_FLAG_SCROLLABLE);
         lv_obj_set_style_bg_opa(m_card, LV_OPA_TRANSP, 0);
         lv_obj_set_size(m_card, bubble_w, bubble_h);
         lv_obj_align(m_card, LV_ALIGN_CENTER, 0, 0);
 
         m_label = lv_label_create(m_card);
+        lv_obj_set_width(m_label, bubble_w - 25);
+        printf("%d",bubble_w - 20);
+        lv_obj_align(m_label, LV_ALIGN_TOP_LEFT, 0, 0);
         lv_obj_set_style_text_color(m_card, lv_color_white(), 0);
 
         update_pointer_location(20, true);
@@ -186,18 +194,7 @@ namespace UI {
         ui->get_card_by_index(UIPlantStatus::water).update_value_label("110");
         ui->get_card_by_index(UIPlantStatus::battery).update_value_label("45");
 #else
-        ui->get_card_by_index(UIPlantStatus::light).update_value_label(
-                std::to_string(Prop::get<int>(Prop::ambient_light)));
-        ui->get_card_by_index(UIPlantStatus::temp).update_value_label(
-                double_to_string(Prop::get<double>(Prop::temperature), 1));
-        ui->get_card_by_index(UIPlantStatus::humidity).update_value_label(
-                std::to_string(Prop::get<int>(Prop::humidity)));
-        ui->get_card_by_index(UIPlantStatus::soil).update_value_label(
-                std::to_string(Prop::get<int>(Prop::soil_moisture)));
-        ui->get_card_by_index(UIPlantStatus::water).update_value_label(
-                std::to_string(Prop::get<int>(Prop::water_level)));
-        ui->get_card_by_index(UIPlantStatus::battery).update_value_label(
-                std::to_string(Prop::get<int>(Prop::battery_percent)));
+        ui->update();
 #endif
     }
 
@@ -216,12 +213,14 @@ namespace UI {
                               StatusCard(bottom_area.m_area, "water", "mL", lv_color_make(154, 215, 253)),
                               StatusCard(bottom_area.m_area, "battery", "%", lv_color_make(123, 214, 89))
                       }) {
-
+        set_input_used(true);
         lv_obj_set_scrollbar_mode(m_scr, LV_SCROLLBAR_MODE_OFF);
         lv_obj_set_style_pad_ver(m_scr, DEFAULT_PADDING_H, 0);
-        m_value_update_timer = lv_timer_create(status_update_timer_cb, 500, this);
-        lv_timer_set_repeat_count(m_value_update_timer, -1);
         hide_bubble_cb();
+        update();
+#ifndef Ivy
+        lv_obj_add_event_cb(m_scr, mouse_cb, LV_EVENT_CLICKED, this);
+#endif
     }
 
     static void _show_bubble_cb(struct _lv_anim_t *anim) {
@@ -229,7 +228,7 @@ namespace UI {
         ui->show_bubble_cb();
     }
 
-    void UIPlantStatus::move_bubble() {
+    void UIPlantStatus::move_bubble() const {
         lv_obj_align_to(bubble.m_space, top_area.m_area, LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
     }
 
@@ -288,26 +287,27 @@ namespace UI {
 
     void UIPlantStatus::routine() {
 #ifdef LV_SIM
-        Base::routine();
-        static int i = 0;
-        if (i++ > 20) {
-            select_next();
-//            select_last();
-            i = 0;
-        }
+//        Base::routine();
+//        static int i = 0;
+//        if (i++ > 20) {
+//            select_next();
+////            select_last();
+//            i = 0;
+//        }
 #endif
     }
 
     void UIPlantStatus::update_selection_cb(int index) {
         /* update bubble contents, color, and pointer pos */
-        update_bubble_status(get_content_by_index(index).c_str(), get_name_color_by_index(index),
-                             get_pointer_x_by_index(index));
+        auto info = get_bubble_info_by_index((sensor_index_t) index);
+        update_bubble_status(info.content.c_str(), info.color, get_pointer_x_by_index(index));
         /* update card style */
         if (current_index != -1) {
             /* should rm last card style */
             get_card_by_index((sensor_index_t) current_index).update_selected_style(false);
         }
         if (index != -1) {
+            get_card_by_index((sensor_index_t) index).update_color(info.color);
             get_card_by_index((sensor_index_t) index).update_selected_style(true);
         }
         current_index = index;
@@ -357,12 +357,35 @@ namespace UI {
         }
     }
 
-    std::string UIPlantStatus::get_content_by_index(int index) {
-        return "test";  /* todo */
-    }
-
-    lv_color_t UIPlantStatus::get_name_color_by_index(int index) {
-        return lv_color_white();
+    UIPlantStatus::bubble_info_t UIPlantStatus::get_bubble_info_by_index(int index) {
+        if (index == -1) {
+            return {"", lv_color_white()};
+        }
+        bool pot_in = true;
+        if (!pot_in && index != battery) {
+            return {"Ivy left for the moment", lv_color_white()};
+        }
+        switch (index) {
+            case light: {
+                return {"The sunlight is a little too much right now", get_palette_rgb(palette_warning)};
+            }
+            case temp: {
+                return {"The sunlight is good", lv_color_white()};
+            }
+            case humidity: {
+                return {"Air humidity is good for Ivy", lv_color_white()};
+            }
+            case soil: {
+                return {"The soil moisture is good for Ivy", lv_color_white()};
+            }
+            case water: {
+                return {"Ivy is very thirsty, please add some water right now!", get_palette_rgb(palette_failure)};
+            }
+            case battery: {
+                return {"Battery is almost run out. Please charge Ivy now!", get_palette_rgb(palette_failure)};
+            }
+        }
+        return {"", lv_color_white()};
     }
 
     void UIPlantStatus::set_focus(area_select_t t_focus) {
@@ -394,7 +417,41 @@ namespace UI {
     }
 
     void UIPlantStatus::clear() {
-        lv_timer_del(m_value_update_timer);
+        if (m_value_update_timer) {
+            lv_timer_del(m_value_update_timer);
+        }
         Base::clear();
     }
+
+    void UIPlantStatus::update() {
+    }
+
+    void UIPlantStatus::start_routine() {
+        m_value_update_timer = lv_timer_create(status_update_timer_cb, 500, this);
+        lv_timer_set_repeat_count(m_value_update_timer, -1);
+        Base::start_routine();
+        for (int i = 0; i <= battery; i++) {
+            auto info = get_bubble_info_by_index((sensor_index_t) i);
+            get_card_by_index((sensor_index_t) i).update_color(info.color);
+        }
+    }
+
+#ifndef Ivy
+
+    void UIPlantStatus::mouse_cb(lv_event_t *event) {
+        lv_indev_t *indev = lv_indev_get_act();
+        lv_indev_type_t indev_type = lv_indev_get_type(indev);
+        if (indev_type == LV_INDEV_TYPE_POINTER) {
+            lv_point_t point;
+            lv_indev_get_point(indev, &point);
+            auto *ui = (UIPlantStatus *) event->user_data;
+            if (point.x > 120) {
+                ui->select_next();
+            } else {
+                ui->select_last();
+            }
+        }
+    }
+
+#endif
 }
