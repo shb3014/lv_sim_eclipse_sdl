@@ -111,15 +111,17 @@ void ui_thread() {
 //    auto ui = std::make_shared<UI::UIFluidAssist>();
 //    auto ui = std::make_shared<UI::TuWaterAssist>();
 //    auto ui = std::make_shared<UI::TuPlantSelect>();
-    auto ui = std::make_shared<UI::UIPlantStatus>();
+//    auto ui = std::make_shared<UI::UIPlantStatus>();
 //    auto ui = std::make_shared<UI::TuFinal>();
 //    auto ui = std::make_shared<UI::TuWater>();
+    auto ui = std::make_shared<UI::UIProgress>();
     {
-
         std::lock_guard<std::recursive_mutex> lock(ui_mutex);
         current_ui = ui;
         ui->set_start(true);
     }
+    vTaskDelay(500);
+    ui->update("hi erhererere","sdfsdfs",45);
 }
 
 int main(int argc, char **argv) {

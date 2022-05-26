@@ -20,17 +20,19 @@ namespace UI {
         lv_obj_set_style_text_font(m_desc_label, &ba_16, 0);
         lv_obj_set_style_text_color(m_desc_label, lv_color_white(), 0);
         lv_obj_set_width(m_desc_label, 280);
+
+
+        lv_obj_align(m_title_label, LV_ALIGN_CENTER, 0, -70);
+        lv_obj_align_to(m_loading_spinner, m_title_label, LV_ALIGN_OUT_BOTTOM_MID, 0, 25);
+        lv_obj_align_to(m_desc_label, m_loading_spinner, LV_ALIGN_OUT_BOTTOM_MID, 0, 25);
+        lv_obj_set_style_text_align(m_title_label, LV_TEXT_ALIGN_CENTER, 0);
+        lv_obj_set_style_text_align(m_desc_label, LV_TEXT_ALIGN_CENTER, 0);
     }
 
     void UILoading::update(const char *title, const char *desc) {
         lv_label_set_text(m_title_label, title);
-        lv_obj_set_style_text_align(m_title_label, LV_TEXT_ALIGN_CENTER, 0);
-        lv_obj_align(m_title_label, LV_ALIGN_CENTER, 0, -70);
-        lv_obj_align_to(m_loading_spinner, m_title_label, LV_ALIGN_OUT_BOTTOM_MID, 0, 25);
 
         lv_label_set_text(m_desc_label, desc);
-        lv_obj_set_style_text_align(m_desc_label, LV_TEXT_ALIGN_CENTER, 0);
-        lv_obj_align_to(m_desc_label, m_loading_spinner, LV_ALIGN_OUT_BOTTOM_MID, 0, 25);
     }
 
 }

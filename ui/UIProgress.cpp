@@ -15,6 +15,7 @@ namespace UI {
         lv_obj_center(m_bar);
 
         m_title_label = lv_label_create(m_scr);
+        lv_obj_set_width(m_title_label,200);
         label_set_style(m_title_label,&ba_30);
         lv_obj_align_to(m_title_label, m_bar, LV_ALIGN_OUT_TOP_MID, 0, -10);
 
@@ -27,12 +28,10 @@ namespace UI {
 
     void UIProgress::update_title(const char *value) {
         lv_label_set_text(m_title_label, value);
-        lv_obj_align_to(m_title_label, m_bar, LV_ALIGN_OUT_TOP_MID, 0, -10);
     }
 
     void UIProgress::update_status(const char *value) {
         lv_label_set_text(m_status_label, value);
-        lv_obj_align_to(m_status_label, m_bar, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
     }
 
     void UIProgress::update_progress(uint8_t progress) {
