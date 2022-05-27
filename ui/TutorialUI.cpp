@@ -5,6 +5,8 @@
 #include "TutorialUI.h"
 #include "tools.h"
 
+#include "font/AddFontRT.h"
+
 #ifdef Ivy
 
 #include "memory"
@@ -62,8 +64,8 @@ namespace UI {
     //region intro
     TuIntro::TuIntro()
             : TuBase(),
-              m_top_text(m_scr, &ba_30),
-              m_bottom_text(m_scr, &ba_16) {
+              m_top_text(m_scr, CNFont::instance().get_font()),
+              m_bottom_text(m_scr, CNFont::instance().get_font()) {
     }
 
     void TuIntro::update(const char *main, const char *sub) {
@@ -90,23 +92,30 @@ namespace UI {
     void TuIntro::next() {
         switch (m_current_step++) {
             case 0:
-                update("Hi", "");
+                //update("Hi", "");
+                update("您好!", "");
                 break;
             case 1:
-                update_main("I'm Ivy");
+                //update_main("I'm Ivy");
+                update_main("我叫艾薇!");
                 break;
             case 2:
-                update_main("Nice to meet you");
+                //update_main("Nice to meet you");
+                update_main("我很好高兴见到你!");
                 break;
             case 3:
-                update_main("Before we enter tutorial");
+                //update_main("Before we enter tutorial");
+                update_main("我们开始指导教程之前,");
                 break;
             case 4:
-                update_main("Please make sure the plant is ready");
+                //update_main("Please make sure the plant is ready");
+                update_main("请您确认植物已经准备好.");
                 break;
             case 5:
-                update_sub((UI::get_colored_str("Otherwise", UI::palette_warning) +
-                            ", please shutdown by long pressing the back button").c_str());
+//                update_sub((UI::get_colored_str("Otherwise", UI::palette_warning) +
+//                            ", please shutdown by long pressing the back button").c_str());
+                update_sub((UI::get_colored_str("否则", UI::palette_warning) +
+                            ", 请按我背后电源键关机!!").c_str());
                 break;
             case 6:
                 update("", "");

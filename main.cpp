@@ -93,9 +93,12 @@ static int tick_thread(void *data);
  *   GLOBAL FUNCTIONS
  **********************/
 
+#include "font/AddFontRT.h"
+
 
 std::shared_ptr<UI::Base> current_ui;
 std::recursive_mutex ui_mutex;
+
 
 void vTaskDelay(int t) {
     std::this_thread::sleep_for(std::chrono::milliseconds(t));
@@ -103,7 +106,7 @@ void vTaskDelay(int t) {
 
 void ui_thread() {
     printf("ui start\n");
-//    auto ui = std::make_shared<UI::TuIntro>();
+    auto ui = std::make_shared<UI::TuIntro>();
 //    auto ui = std::make_shared<UI::TuTouchBar>();
 //    auto ui = std::make_shared<UI::UIDate>();
 //    auto ui = std::make_shared<UI::UITime>();
@@ -111,7 +114,7 @@ void ui_thread() {
 //    auto ui = std::make_shared<UI::UIFluidAssist>();
 //    auto ui = std::make_shared<UI::TuWaterAssist>();
 //    auto ui = std::make_shared<UI::TuPlantSelect>();
-    auto ui = std::make_shared<UI::UIPlantStatus>();
+//    auto ui = std::make_shared<UI::UIPlantStatus>();
 //    auto ui = std::make_shared<UI::TuFinal>();
 //    auto ui = std::make_shared<UI::TuWater>();
     {
@@ -131,6 +134,9 @@ int main(int argc, char **argv) {
 
     /*Initialize the HAL (display, input devices, tick) for LVGL*/
     hal_init();
+
+    CNFont::instance().lv_font_load();
+
     current_ui = std::make_shared<UI::UIDefault>();
 
 //  lv_example_switch_1();
