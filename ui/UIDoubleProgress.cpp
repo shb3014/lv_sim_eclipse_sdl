@@ -20,13 +20,13 @@ namespace UI {
         lv_obj_align_to(m_bar_2, m_bar_1, LV_ALIGN_OUT_BOTTOM_MID, 0, 50);
 
         m_title_label = lv_label_create(m_scr);
-        label_set_style(m_status_label_2,&ba_30);
-        lv_obj_align_to(m_title_label, m_bar_2, LV_ALIGN_OUT_TOP_MID, 0, -20);
+        label_set_style(m_title_label,&ba_30);
+        lv_obj_align_to(m_title_label, m_bar_1, LV_ALIGN_OUT_TOP_MID, 0, -20);
 
         m_status_label_1 = lv_label_create(m_scr);
+        lv_obj_set_width(m_status_label_1, 300);
         label_set_style(m_status_label_1,&ba_16);
         lv_obj_align_to(m_status_label_1, m_bar_1, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
-        lv_obj_set_width(m_status_label_1, 300);
 
         m_status_label_2 = lv_label_create(m_scr);
         label_set_style(m_status_label_2,&ba_16);
