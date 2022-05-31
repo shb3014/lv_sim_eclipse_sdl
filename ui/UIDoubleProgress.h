@@ -22,12 +22,15 @@ namespace UI {
 
         void update_progress_2(const char *status_2, uint8_t progress_2);
 
+        void update_desc(const char*desc);
+
     private:
         lv_obj_t *m_bar_1;
         lv_obj_t *m_bar_2;
         lv_obj_t *m_title_label;
         lv_obj_t *m_status_label_1;
         lv_obj_t *m_status_label_2;
+        lv_obj_t *m_desc_label;
 
     };
 }

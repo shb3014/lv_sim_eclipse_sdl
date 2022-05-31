@@ -101,6 +101,7 @@ namespace UI {
         label_set_style(m_bottom_label, &ba_30);
         lv_obj_align(m_bottom_label, LV_ALIGN_CENTER, 0, 50);
         lv_obj_align(m_top_text.label, LV_ALIGN_TOP_MID, 0, 20);
+        m_top_text.update(get_colored_str("Please choose your plant\n( in Tuya APP )",palette_notice).c_str());
 #ifndef Ivy
         lv_obj_add_event_cb(m_scr, mouse_cb, LV_EVENT_CLICKED, this);
 #endif

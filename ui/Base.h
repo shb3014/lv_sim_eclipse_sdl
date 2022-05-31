@@ -32,7 +32,8 @@ namespace UI {
         TU_TOUCH_BAR,
         TU_PROV,
         TU_TUYA,
-        TU_PLANT,
+        TU_PLANT_DETECT,
+        TU_PLANT_SELECT,
         TU_WATER
     } index_t;
 

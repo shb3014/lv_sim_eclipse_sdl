@@ -344,6 +344,7 @@ namespace UI {
         switch (m_current_step) {
             case 0: {
                 m_top_text.update("Nice! Let's now prepare for the plant");
+                lv_timer_set_period(m_timer, 4500);
                 break;
             }
             case 1: {
@@ -354,11 +355,13 @@ namespace UI {
                 lv_obj_align(m_canvas, LV_ALIGN_CENTER, -5, 10);
                 auto a = anim_create(m_canvas, anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, 1000, 1500);
                 lv_anim_start(&a);
-                lv_timer_set_period(m_timer, 4000);
                 break;
             }
             case 2: {
-                fade_indicator(right, true);
+                m_top_text.update("Touch right to the next step");
+                fade_indicator(right, true, 1000, 1500);
+                lv_timer_set_period(m_timer, 1);
+                m_right_touched = false;
                 break;
             }
             case 3: {
@@ -433,15 +436,14 @@ namespace UI {
         }
         Base::clear();
     }
-    TuPlantSelect::TuPlantSelect()
-            : TuCanvasBase(),
-              m_middle_text(m_scr, &ba_30) {
+
+
+    TuPlantDetect::TuPlantDetect()
+            : TuCanvasBase() {
         lv_obj_align(m_top_text.label, LV_ALIGN_TOP_MID, 0, 15);
-        lv_obj_align(m_middle_text.label, LV_ALIGN_CENTER, 0, -30);
-        lv_obj_align_to(m_bottom_text.label,m_middle_text.label,LV_ALIGN_OUT_BOTTOM_MID,0,30);
     }
 
-    void TuPlantSelect::next() {
+    void TuPlantDetect::next() {
         switch (m_current_step) {
             case 0: {
                 m_top_text.update("Now put the inner-pot in");
@@ -450,21 +452,39 @@ namespace UI {
                 lv_obj_align(m_canvas, LV_ALIGN_CENTER, -5, 10);
                 auto a = anim_create(m_canvas, anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, 1000, 1500);
                 lv_anim_start(&a);
+                fade_indicator(right, true, 1000, 1500);
+                lv_timer_set_period(m_timer, 1);
                 break;
             }
-            case 1: {
-                lv_timer_set_period(m_timer, 5000);
-                auto a = anim_create(m_canvas, anim_fade, LV_OPA_COVER, LV_OPA_TRANSP, 1000);
-                lv_anim_start(&a);
-                m_top_text.update("");
-                m_middle_text.update(("Please select your plant in "+ get_colored_str("Tuya APP",palette_notice)).c_str());
-                m_bottom_text.update("After the plant is selected,\nthis page will be automatically switched.");
+        }
+        m_current_step++;
+    }
+
+    TuPlantSelect::TuPlantSelect()
+            : TuCanvasBase(),
+              m_middle_text(m_scr, &ba_30) {
+        lv_obj_align(m_middle_text.label, LV_ALIGN_CENTER, 0, -30);
+        lv_obj_set_width(m_top_text.label, 280);
+        lv_obj_align_to(m_top_text.label, m_middle_text.label, LV_ALIGN_OUT_BOTTOM_MID, 0, 30);
+    }
+
+    void TuPlantSelect::next() {
+        switch (m_current_step) {
+            case 0: {
+                m_middle_text.update(
+                        ("Please select your plant in " + get_colored_str("Tuya APP", palette_notice)).c_str());
+
+                m_top_text.update("After the plant is selected,\nthis page will be automatically switched.");
+                fade_indicator(right, true, 1000, 4500);
+                m_bottom_text.update("Or touch right to skip", true, false, 3000);
+//                m_right_touched = false;
                 break;
             }
-            case 2: {
-//                auto ui = make<TuFinal>();
-//                LvglDriver::instance().load(ui);
-            }
+//            case 1: {
+//                if (!Prop::get<bool>(Prop::plant_type) && !m_right_touched) {
+//                    return;
+//                }
+//            }
         }
         m_current_step++;
     }
@@ -486,7 +506,7 @@ namespace UI {
                 m_text.update("You have completed the tutorial!");
                 break;
             }
-            case 2:{
+            case 2: {
                 break;
             }
         }

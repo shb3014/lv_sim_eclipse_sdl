@@ -107,20 +107,22 @@ void ui_thread() {
 //    auto ui = std::make_shared<UI::TuTouchBar>();
 //    auto ui = std::make_shared<UI::UIDate>();
 //    auto ui = std::make_shared<UI::UITime>();
-//    auto ui = std::make_shared<UI::UIFluid>();
+    auto ui = std::make_shared<UI::UIFluid>();
 //    auto ui = std::make_shared<UI::UIFluidAssist>();
 //    auto ui = std::make_shared<UI::TuWaterAssist>();
 //    auto ui = std::make_shared<UI::TuPlantSelect>();
 //    auto ui = std::make_shared<UI::UIPlantStatus>();
 //    auto ui = std::make_shared<UI::TuFinal>();
 //    auto ui = std::make_shared<UI::TuWater>();
-    auto ui = std::make_shared<UI::UIDoubleProgress>();
+//    auto ui = std::make_shared<UI::UIDoubleProgress>();
+//    auto ui = std::make_shared<UI::TuPlantDetect>();
     {
         std::lock_guard<std::recursive_mutex> lock(ui_mutex);
         current_ui = ui;
         ui->set_start(true);
     }
     vTaskDelay(500);
+//    ui->update_desc(UI::get_colored_str("Please do not shutdown Ivy",UI::palette_notice).c_str());
 //    ui->update("hi erhererere","sdfsdfs",45);
 }
 

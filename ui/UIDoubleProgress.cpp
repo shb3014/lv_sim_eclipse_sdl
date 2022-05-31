@@ -5,6 +5,7 @@
 #include "UIDoubleProgress.h"
 #include "string"
 #include "tools.h"
+
 namespace UI {
     UIDoubleProgress::UIDoubleProgress() : UI::Base() {
         m_bar_1 = lv_bar_create(m_scr);
@@ -14,23 +15,29 @@ namespace UI {
         bar_set_default_style(m_bar_2);
 
         lv_obj_set_size(m_bar_1, 200, 20);
-        lv_obj_align(m_bar_1, LV_ALIGN_CENTER, 0, -20);
+        lv_obj_align(m_bar_1, LV_ALIGN_CENTER, 0, -30);
 
         lv_obj_set_size(m_bar_2, 200, 20);
-        lv_obj_align_to(m_bar_2, m_bar_1, LV_ALIGN_OUT_BOTTOM_MID, 0, 50);
+        lv_obj_align_to(m_bar_2, m_bar_1, LV_ALIGN_OUT_BOTTOM_MID, 0, 40);
 
         m_title_label = lv_label_create(m_scr);
-        label_set_style(m_title_label,&ba_30);
+        label_set_style(m_title_label, &ba_30);
         lv_obj_align_to(m_title_label, m_bar_1, LV_ALIGN_OUT_TOP_MID, 0, -20);
 
         m_status_label_1 = lv_label_create(m_scr);
         lv_obj_set_width(m_status_label_1, 300);
-        label_set_style(m_status_label_1,&ba_16);
+        label_set_style(m_status_label_1, &ba_16);
         lv_obj_align_to(m_status_label_1, m_bar_1, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
 
         m_status_label_2 = lv_label_create(m_scr);
-        label_set_style(m_status_label_2,&ba_16);
+        label_set_style(m_status_label_2, &ba_16);
         lv_obj_align_to(m_status_label_2, m_bar_2, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
+
+        m_desc_label = lv_label_create(m_scr);
+        lv_obj_set_width(m_desc_label, 280);
+        label_set_style(m_desc_label, &ba_16);
+        lv_label_set_recolor(m_desc_label, true);
+        lv_obj_align_to(m_desc_label, m_status_label_2, LV_ALIGN_OUT_BOTTOM_MID, 0, 12);
     }
 
 
@@ -62,5 +69,9 @@ namespace UI {
             lv_obj_align_to(m_status_label_2, m_bar_2, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
         }
         lv_bar_set_value(m_bar_2, progress_2, LV_ANIM_OFF);
+    }
+
+    void UIDoubleProgress::update_desc(const char *desc) {
+        lv_label_set_text(m_desc_label, desc);
     }
 }

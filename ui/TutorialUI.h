@@ -187,12 +187,23 @@ namespace UI {
     };
 
 
+    class TuPlantDetect : public TuCanvasBase {
+    public:
+        TuPlantDetect();
+
+        index_t get_index() override {
+            return TU_PLANT_DETECT;
+        }
+
+        void next() override;
+    };
+
     class TuPlantSelect : public TuCanvasBase {
     public:
         TuPlantSelect();
 
         index_t get_index() override {
-            return TU_PLANT;
+            return TU_PLANT_SELECT;
         }
 
         void next() override;
@@ -200,7 +211,6 @@ namespace UI {
     private:
         BasicText m_middle_text;
     };
-
 
     class TuFinal : public TuBase {
     public:
