@@ -512,4 +512,42 @@ namespace UI {
         }
         m_current_step++;
     }
+
+    TuWaterCalib::TuWaterCalib()
+            : TuBase(),
+              m_step_label(m_scr, &ba_30, 300, 400, 300),
+              m_value_label(m_scr, &ba_16, 300, 400, 300),
+              m_desc_label(m_scr, &ba_16, 300, 400, 300),
+              m_progress_bar(lv_bar_create(m_scr)) {
+        bar_set_default_style(m_progress_bar);
+        lv_obj_set_size(m_progress_bar, 200, 20);
+
+        lv_obj_align(m_step_label.label, LV_ALIGN_TOP_MID, 0, 30);
+        lv_obj_align(m_value_label.label, LV_ALIGN_CENTER, 0, -20);
+        lv_obj_align(m_desc_label.label, LV_ALIGN_CENTER, 0, 60);
+        lv_obj_align(m_progress_bar, LV_ALIGN_CENTER, 0, 20);
+        m_step_label.update("Calibrating Level Sensor");
+
+//        m_value_label.update("Preparing sensor environment...");
+//        m_desc_label.update("Please wait for a moment");
+
+//        m_value_label.update("Detected water presence.");
+//        m_desc_label.update(get_colored_str("Please make sure the tank is empty.", palette_notice).c_str());
+
+//        m_value_label.update("Please add 20mL of water.");
+//        m_desc_label.update("After the water is added\nplease touch the right pad to continue.");
+
+//        m_value_label.update("Please add 20mL of water.");
+//        m_desc_label.update(
+//                get_colored_str("Please make sure the water is added.", palette_notice).c_str());
+
+
+        m_value_label.update("Now add another 20mL of water\n(40mL in total).");
+        m_desc_label.update("After the water is added\nplease touch the right pad to continue.");
+
+    }
+
+    void TuWaterCalib::next() {
+
+    }
 }

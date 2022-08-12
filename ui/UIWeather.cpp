@@ -77,7 +77,7 @@ namespace UI {
             n = -10;
         }
         auto ui = (UIWeather *) timer->user_data;
-        ui->update_info("partly sunny", "weather", n, 20, 35);
+        ui->update_info("partly sunny", "too_much_light.a", n, 20, 35);
     }
 
     void

@@ -34,7 +34,8 @@ namespace UI {
         TU_TUYA,
         TU_PLANT_DETECT,
         TU_PLANT_SELECT,
-        TU_WATER
+        TU_WATER,
+        TU_WATER_CALIB
     } index_t;
 
     typedef enum {

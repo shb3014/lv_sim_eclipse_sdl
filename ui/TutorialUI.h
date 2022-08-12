@@ -225,6 +225,24 @@ namespace UI {
         BasicText m_text;
     };
 
+    class TuWaterCalib: public TuBase{
+    public:
+        TuWaterCalib();
+
+        index_t get_index() override {
+            return TU_WATER_CALIB;
+        }
+
+        void next() override;
+
+    private:
+        BasicText m_step_label;
+        BasicText m_value_label;
+        BasicText m_desc_label;
+        lv_obj_t *m_progress_bar;
+        int confirm_t = 0;
+    };
+
 }
 
 

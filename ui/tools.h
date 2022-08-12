@@ -15,7 +15,8 @@ namespace UI {
 //#define PATH_ASSETS "C:/Users/Gordon/Desktop/EmbededProjects/lv_sim_eclipse_sdl/assets"
 //#define PATH_ASSETS "D:/Ivy/device/assets/ouput"
 //#define PATH_ASSETS "C:/Users/sungaoran/Desktop/Ivy/out"
-#define PATH_ASSETS "C:/Users/Gordon/Desktop/EmbededProjects/Plantsio-Ivy/device_files/factory_blank/assets"
+//#define PATH_ASSETS "C:/Users/Gordon/Desktop/EmbededProjects/Plantsio-Ivy/device_files/factory_blank/assets"
+#define PATH_ASSETS "D:/Ivy/gif/out"
 //#define PATH_ASSETS "C:/Users/sungaoran/Desktop/EmbeddedSystems/Plantsio-Ivy/device_files/factory_blank/assets"
 //region animation
     std::string get_asset_path(std::string &asset_name);
