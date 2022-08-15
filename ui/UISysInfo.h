@@ -9,6 +9,8 @@
 #include "Components.h"
 
 namespace UI {
+#define SYS_UI_HEIGHT       200
+
     class UISysInfo : public Base {
     public:
         UISysInfo();
@@ -17,7 +19,7 @@ namespace UI {
             return UI_SYS_INFO;
         }
 
-        void routine() override;
+        void update_info();
 
     private:
         lv_obj_t *m_table;
