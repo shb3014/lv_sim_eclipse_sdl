@@ -27,6 +27,7 @@ namespace UI {
         UI_TEST,
         UI_TEXT,
         UI_TEMP_TEXT,
+        UI_PROV_TIP,
 
         TU_INTRO,
         TU_TOUCH_BAR,

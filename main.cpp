@@ -38,6 +38,8 @@
 #include "ui/TutorialUI.h"
 #include "ui/UIFluid.h"
 #include "ui/UIFluidAssist.h"
+#include "ui/UIProvTip.h"
+
 #include "utils/log.h"
 #include "lv_conf.h"
 #include "chrono"
@@ -106,7 +108,7 @@ void vTaskDelay(int t) {
 
 void ui_thread() {
     printf("ui start\n");
-    auto ui = std::make_shared<UI::TuIntro>();
+//    auto ui = std::make_shared<UI::TuIntro>();
 //    auto ui = std::make_shared<UI::TuTouchBar>();
 //    auto ui = std::make_shared<UI::UIDate>();
 //    auto ui = std::make_shared<UI::UITime>();
@@ -117,6 +119,8 @@ void ui_thread() {
 //    auto ui = std::make_shared<UI::UIPlantStatus>();
 //    auto ui = std::make_shared<UI::TuFinal>();
 //    auto ui = std::make_shared<UI::TuWater>();
+//    auto ui = std::make_shared<UI::UITest>();
+    auto ui = std::make_shared<UI::UIProvTip>();
     {
 
         std::lock_guard<std::recursive_mutex> lock(ui_mutex);
@@ -135,7 +139,7 @@ int main(int argc, char **argv) {
     /*Initialize the HAL (display, input devices, tick) for LVGL*/
     hal_init();
 
-    CNFont::instance().lv_font_load();
+    //CNFont::instance().lv_font_load();
 
     current_ui = std::make_shared<UI::UIDefault>();
 
