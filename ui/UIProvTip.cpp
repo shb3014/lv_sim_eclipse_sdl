@@ -19,6 +19,7 @@ namespace UI
     {
         lv_obj_set_style_opa((lv_obj_t *) var, value, 0);
     }
+
     static void anim_fade_cb(void *var, int32_t value)
     {
         lv_obj_set_style_opa((lv_obj_t *) var, value, 0);
@@ -31,6 +32,7 @@ namespace UI
         lv_obj_set_style_bg_opa(m_tip_card, LV_OPA_TRANSP, 0);
         lv_obj_set_style_opa(m_tip_card, LV_OPA_TRANSP, 0);
         lv_obj_set_style_radius(m_tip_card, 20, 0);
+        lv_obj_clear_flag(m_tip_card, LV_OBJ_FLAG_SCROLLABLE);
         lv_obj_align(m_tip_card, LV_ALIGN_TOP_MID, 0, 80);
 
         m_tip_lable = lv_label_create(m_tip_card);
@@ -43,14 +45,24 @@ namespace UI
         label_set_style(m_desc_lable, &ba_16);
         lv_obj_align(m_desc_lable, LV_ALIGN_TOP_LEFT, 10, 20);
         lv_label_set_text(m_desc_lable, "");
-
-        card_anim_create();
     }
 
-    void TipCard::update_tip_desc(const char * desc)
+    void TipCard::card_anim_create()
     {
+        m_anim_show = anim_create(m_tip_card, anim_show_cb, LV_OPA_TRANSP, LV_OPA_COVER,
+                                  3000, 0, 0, 0, nullptr,
+                                  nullptr, 0, lv_anim_path_ease_in_out);
+        lv_anim_set_early_apply(&m_anim_show, false);
 
-        lv_label_set_text(m_desc_lable, desc);
+        m_anim_fade = anim_create(m_tip_card, anim_fade_cb, LV_OPA_COVER, LV_OPA_TRANSP,
+                                  3000, 0, 0, 0, nullptr,
+                                  nullptr, 0, lv_anim_path_ease_in_out);
+        lv_anim_set_early_apply(&m_anim_fade, false);
+
+        m_anim_move = anim_create(m_tip_card, anim_move_hor, 0, -TIP_CARD_WIDTH,
+                                  5000, 0, 0, 0, nullptr,
+                                  nullptr, 0, lv_anim_path_overshoot);
+        lv_anim_set_early_apply(&m_anim_move, false);
     }
 
     void TipCard::card_anim_begin()
@@ -64,6 +76,13 @@ namespace UI
         lv_anim_timeline_start(m_anim_timeline);
     }
 
+    void TipCard::update_tip_desc(const char *desc)
+    {
+
+        lv_label_set_text(m_desc_lable, desc);
+    }
+
+
     void TipCard::card_anim_stop()
     {
         lv_anim_timeline_stop(m_anim_timeline);
@@ -74,50 +93,49 @@ namespace UI
         m_anim_start_time = time;
     }
 
-    bool TipCard::is_anim_over()
+    EndTipCard::EndTipCard(lv_obj_t *parent) : TipCard(parent)
     {
-       return lv_anim_timeline_get_playtime(m_anim_timeline) == 3000 ? true : false;
+
     }
 
-    void TipCard::card_anim_create()
+    void EndTipCard::card_anim_create()
     {
-        m_anim_show = anim_create(m_tip_card, anim_show_cb, LV_OPA_TRANSP, LV_OPA_COVER,
-                               3000, 0, 0, 0,nullptr,
-                               nullptr, 0,lv_anim_path_ease_in_out);
-        lv_anim_set_early_apply(&m_anim_show, false);
-
-        m_anim_fade = anim_create(m_tip_card, anim_fade_cb, LV_OPA_COVER, LV_OPA_TRANSP,
-                                 3000, 0, 0, 0,nullptr,
-                                 nullptr, 0,lv_anim_path_ease_in_out);
-        lv_anim_set_early_apply(&m_anim_fade, false);
-
-        m_anim_move = anim_create(m_tip_card, anim_move_hor, 0, -TIP_CARD_WIDTH,
-                                 5000, 0, 0, 0,nullptr,
-                                 nullptr, 0,lv_anim_path_overshoot);
-        lv_anim_set_early_apply(&m_anim_move, false);
+        m_anim_end_tip = anim_create(m_tip_card, anim_show_cb, LV_OPA_TRANSP, LV_OPA_COVER,
+                                     3000, 0, 0, 0, nullptr,
+                                     nullptr, 0, lv_anim_path_ease_in_out);
+        lv_anim_set_early_apply(&m_anim_end_tip, false);
     }
 
+    void EndTipCard::card_anim_begin()
+    {
+        m_anim_timeline = lv_anim_timeline_create();
 
+        lv_anim_timeline_add(m_anim_timeline, m_anim_start_time, &m_anim_end_tip);
 
-    UIProvTip::UIProvTip() : Base(),
-        m_tip_card(
-                {
-                   TipCard(m_scr),
-                   TipCard(m_scr),
-                   TipCard(m_scr),
-                   }
-                )
+        lv_anim_timeline_start(m_anim_timeline);
+    }
+
+    UIProvTip::UIProvTip() :
+            Base(),
+            m_tip_card(
+                    {
+                            TipCard(m_scr),
+                            TipCard(m_scr),
+                            TipCard(m_scr),
+                    }
+            ),
+            m_end_tip_card(m_scr)
     {
         m_title_lable = lv_label_create(m_scr);
         label_set_style(m_title_lable, &ba_40);
-        lv_obj_align(m_title_lable, LV_ALIGN_TOP_MID, 0, 20);
+        lv_obj_align(m_title_lable, LV_ALIGN_TOP_MID, 0, 30);
         lv_label_set_recolor(m_title_lable, true);
 
     }
 
     index_t UIProvTip::get_index()
     {
-       return UI_PROV_TIP;
+        return UI_PROV_TIP;
     }
 
     void UIProvTip::clear()
@@ -134,15 +152,17 @@ namespace UI
     void UIProvTip::start_routine()
     {
         uint32_t start_time = 0;
-        for (auto itr = m_tip_card.begin(); itr < m_tip_card.end(); itr ++)
+        for (auto itr = m_tip_card.begin(); itr < m_tip_card.end(); itr++)
         {
-            itr->set_anim_start_time(start_time );
+            itr->set_anim_start_time(start_time);
+            itr->card_anim_create();
             itr->card_anim_begin();
             start_time += ANIM_TIME_INTERVAL;
         }
 
-        while (!m_tip_card[2].is_anim_over());
-        m_tip_card[2].card_anim_stop();
+        m_end_tip_card.set_anim_start_time(start_time);
+        m_end_tip_card.card_anim_create();
+        m_end_tip_card.card_anim_begin();
     }
 
     void UIProvTip::input_cb(input_t input)
@@ -156,6 +176,7 @@ namespace UI
         m_tip_card[0].update_tip_desc("this is a tip one!");
         m_tip_card[1].update_tip_desc("this is a tip two!");
         m_tip_card[2].update_tip_desc("this is a tip three!");
+        m_end_tip_card.update_tip_desc("this is a end card!");
     }
 }
 

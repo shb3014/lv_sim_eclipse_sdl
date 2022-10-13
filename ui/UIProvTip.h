@@ -4,6 +4,7 @@
 
 #ifndef LVGL_UIPROVTIP_H
 #define LVGL_UIPROVTIP_H
+
 #include "Base.h"
 
 namespace UI
@@ -14,32 +15,45 @@ namespace UI
         TipCard(lv_obj_t *parent);
 
     public:
-        void update_tip_desc(const char * desc);
+        virtual void card_anim_create();
 
-        void card_anim_begin();
+        virtual void card_anim_begin();
+
+        void update_tip_desc(const char *desc);
 
         void card_anim_stop();
 
         void set_anim_start_time(uint32_t time);
 
-        bool is_anim_over();
-
-    private:
-        void card_anim_create();
-
-    private:
+    protected:
         lv_obj_t *m_tip_card;
 
-        lv_obj_t *m_tip_lable;
-        lv_obj_t *m_desc_lable;
+        uint32_t m_anim_start_time;
 
         lv_anim_timeline_t *m_anim_timeline;
+
+    private:
+        lv_obj_t *m_tip_lable;
+        lv_obj_t *m_desc_lable;
 
         lv_anim_t m_anim_fade;
         lv_anim_t m_anim_show;
         lv_anim_t m_anim_move;
+    };
 
-        uint32_t m_anim_start_time;
+    class EndTipCard : public TipCard
+    {
+    public:
+        EndTipCard(lv_obj_t *parent);
+
+    public:
+        void card_anim_create() override;
+
+        void card_anim_begin() override;
+
+    private:
+        lv_anim_t m_anim_end_tip;
+
     };
 
 
@@ -67,9 +81,9 @@ namespace UI
         lv_obj_t *m_title_lable;
 
         std::vector<TipCard> m_tip_card;
+        EndTipCard m_end_tip_card;
     };
 }
-
 
 
 #endif //LVGL_UIPROVTIP_H
