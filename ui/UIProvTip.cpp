@@ -42,6 +42,8 @@ namespace UI
         lv_label_set_text(m_tip_lable, "#ff0000 Tip:#");
 
         m_desc_lable = lv_label_create(m_tip_card);
+        lv_label_set_long_mode(m_desc_lable, LV_LABEL_LONG_WRAP);
+        lv_obj_set_width(m_desc_lable,160);
         label_set_style(m_desc_lable, &ba_16);
         lv_obj_align(m_desc_lable, LV_ALIGN_TOP_LEFT, 10, 20);
         lv_label_set_text(m_desc_lable, "");
@@ -173,10 +175,10 @@ namespace UI
     void UIProvTip::update_desc()
     {
         lv_label_set_text(m_title_lable, "#00ff00 this is a title#");
-        m_tip_card[0].update_tip_desc("this is a tip one!");
-        m_tip_card[1].update_tip_desc("this is a tip two!");
-        m_tip_card[2].update_tip_desc("this is a tip three!");
-        m_end_tip_card.update_tip_desc("this is a end card!");
+        m_tip_card[0].update_tip_desc("this is a tip one this is a tip one this is a tip one this is a tip one this is a tip one!");
+        m_tip_card[1].update_tip_desc("this is a tip two this is a tip two this is a tip two this is a tip two this is a tip two!");
+        m_tip_card[2].update_tip_desc("this is a tip three! this is a tip three! this is a tip three! this is a tip three! this is a tip three!");
+        m_end_tip_card.update_tip_desc("this is a end card! this is a end card! this is a end card! this is a end card! this is a end card!");
     }
 }
 
