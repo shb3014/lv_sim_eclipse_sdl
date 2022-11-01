@@ -6,56 +6,18 @@
 #define LVGL_UIPROVTIP_H
 
 #include "Base.h"
+#include "Components.h"
 
 namespace UI
 {
-    class TipCard
+    typedef enum
     {
-    public:
-        TipCard(lv_obj_t *parent);
-
-    public:
-        virtual void card_anim_create();
-
-        virtual void card_anim_begin();
-
-        void update_tip_desc(const char *desc);
-
-        void card_anim_stop();
-
-        void set_anim_start_time(uint32_t time);
-
-    protected:
-        lv_obj_t *m_tip_card;
-
-        uint32_t m_anim_start_time;
-
-        lv_anim_timeline_t *m_anim_timeline;
-
-    private:
-        lv_obj_t *m_tip_lable;
-        lv_obj_t *m_desc_lable;
-
-        lv_anim_t m_anim_fade;
-        lv_anim_t m_anim_show;
-        lv_anim_t m_anim_move;
-    };
-
-    class EndTipCard : public TipCard
-    {
-    public:
-        EndTipCard(lv_obj_t *parent);
-
-    public:
-        void card_anim_create() override;
-
-        void card_anim_begin() override;
-
-    private:
-        lv_anim_t m_anim_end_tip;
-
-    };
-
+        prov_init,
+        prov_ap_sta_connected,
+        prov_get_info,
+        prov_sta_connected,
+        prov_finished,
+    }prov_status_t;
 
     class UIProvTip : public Base
     {
@@ -73,15 +35,29 @@ namespace UI
 
         void input_cb(input_t input) override;
 
+        void ui_prov_set_status(prov_status_t status);
+
 
     private:
-        void update_desc();
+        void update_title(const char *content);
+
+        void update_tip(const char *content);
+
+        void realign();
+
+        void next();
+
+        static void timer_cb(lv_timer_t *timer);
 
     private:
-        lv_obj_t *m_title_lable;
 
-        std::vector<TipCard> m_tip_card;
-        EndTipCard m_end_tip_card;
+        BasicText m_tip_title_text;
+        BasicText m_tip_content_text;
+
+        lv_timer_t *m_timer;
+
+        prov_status_t m_prov_status;
+
     };
 }
 
