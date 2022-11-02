@@ -43,21 +43,17 @@ namespace UI
 
         void update_tip(const char *content);
 
-        void realign();
-
         void next();
 
         static void timer_cb(lv_timer_t *timer);
 
     private:
+        prov_status_t m_prov_status;
 
         BasicText m_tip_title_text;
         BasicText m_tip_content_text;
 
         lv_timer_t *m_timer;
-
-        prov_status_t m_prov_status;
-
     };
 }
 
