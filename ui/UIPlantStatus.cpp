@@ -19,6 +19,8 @@ namespace UI {
         lv_obj_set_style_bg_opa(m_card, LV_OPA_TRANSP, 0);
         lv_obj_clear_flag(m_card, LV_OBJ_FLAG_SCROLLABLE);
         lv_obj_set_style_radius(m_card, 20, 0);
+        lv_obj_set_style_border_width(m_card,1,0);
+        lv_obj_set_style_border_opa(m_card,LV_OPA_50,0);
 
         m_value_label = lv_label_create(m_card);
         update_value_label("--");

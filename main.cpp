@@ -116,11 +116,11 @@ void ui_thread() {
 //    auto ui = std::make_shared<UI::UIFluidAssist>();
 //    auto ui = std::make_shared<UI::TuWaterAssist>();
 //    auto ui = std::make_shared<UI::TuPlantSelect>();
-//    auto ui = std::make_shared<UI::UIPlantStatus>();
+    auto ui = std::make_shared<UI::UIPlantStatus>();
 //    auto ui = std::make_shared<UI::TuFinal>();
 //    auto ui = std::make_shared<UI::TuWater>();
 //    auto ui = std::make_shared<UI::UITest>();
-    auto ui = std::make_shared<UI::UIProvTip>();
+//    auto ui = std::make_shared<UI::UIProvTip>();
     {
 
         std::lock_guard<std::recursive_mutex> lock(ui_mutex);
