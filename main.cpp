@@ -39,6 +39,8 @@
 #include "ui/UIFluid.h"
 #include "ui/UIFluidAssist.h"
 #include "ui/UISysInfo.h"
+#include "ui/UIProvTip.h"
+
 #include "utils/log.h"
 #include "lv_conf.h"
 #include "chrono"
@@ -96,9 +98,12 @@ static int tick_thread(void *data);
  *   GLOBAL FUNCTIONS
  **********************/
 
+#include "font/AddFontRT.h"
+
 
 std::shared_ptr<UI::Base> current_ui;
 std::recursive_mutex ui_mutex;
+
 
 void vTaskDelay(int t) {
     std::this_thread::sleep_for(std::chrono::milliseconds(t));
@@ -118,6 +123,8 @@ void ui_thread() {
 //    auto ui = std::make_shared<UI::UIPlantStatus>();
 //    auto ui = std::make_shared<UI::TuFinal>();
 //    auto ui = std::make_shared<UI::TuWater>();
+//    auto ui = std::make_shared<UI::UITest>();
+//    auto ui = std::make_shared<UI::UIProvTip>();
 //    auto ui = std::make_shared<UI::UIDoubleProgress>();
 //    auto ui = std::make_shared<UI::TuPlantDetect>();
 //    auto ui = std::make_shared<UI::UIWeather>();
@@ -137,9 +144,9 @@ void ui_thread() {
 //                   lv_color_make(0,0,255));
 //        ui->update(0, 56, 0, "Unplug Power!", lv_color_make(255, 255, 0), lv_color_make(255, 0, 0));
 //                ui->update(0, 56, 0, "Wait!.", lv_color_make(255, 255, 0), lv_color_make(0, 0, 0));
-        std::string fail_str = std::to_string(68) + "% | Fail!";
-        ui->update(23423, 66, 0, fail_str.c_str(), lv_color_make(255, 0, 0),
-                   lv_color_make(0, 255, 0));
+//        std::string fail_str = std::to_string(68) + "% | Fail!";
+//        ui->update(23423, 66, 0, fail_str.c_str(), lv_color_make(255, 0, 0),
+//                   lv_color_make(0, 255, 0));
 //                ui->update(0, 56, 0, "Plugin Power!",
 //                           false ? lv_color_make(0, 0, 255) : lv_color_make(0, 255, 255),
 //                           lv_color_make(255, 0, 0));
@@ -158,6 +165,9 @@ int main(int argc, char **argv) {
 
     /*Initialize the HAL (display, input devices, tick) for LVGL*/
     hal_init();
+
+    //CNFont::instance().lv_font_load();
+
     current_ui = std::make_shared<UI::UIDefault>();
 
 //  lv_example_switch_1();

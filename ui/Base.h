@@ -27,6 +27,7 @@ namespace UI {
         UI_TEST,
         UI_TEXT,
         UI_TEMP_TEXT,
+        UI_PROV_TIP,
         UI_TEST_ERROR,
         UI_TEST_AGING,
 
