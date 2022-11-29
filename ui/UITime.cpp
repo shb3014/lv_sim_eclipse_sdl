@@ -4,6 +4,7 @@
 
 #include "UITime.h"
 #include "tools.h"
+#include "tools.h"
 //#include "tool/sys.h"
 
 namespace UI {
@@ -29,6 +30,9 @@ namespace UI {
         lv_obj_set_style_line_width(sep_line, 1, 0);
         lv_obj_set_pos(sep_line, 180, 135);
 
+        am_label = lv_label_create(m_scr);
+        label_set_style(am_label, &ba_16);
+
         update_info(true);
     }
 
@@ -37,6 +41,7 @@ namespace UI {
         anim_canvas_bind_asset(weather_anim, "weather/sunny.b");
 
         lv_obj_align_to(weather_anim, sep_line, LV_ALIGN_OUT_RIGHT_MID, 20, -6);
+        lv_obj_align_to(am_label, time_label, LV_ALIGN_OUT_LEFT_MID, -10, 0);
         Base::start_routine();
     }
 
@@ -54,25 +59,28 @@ namespace UI {
             last_tm.tm_hour = info->tm_hour;
             last_tm.tm_min = info->tm_min;
             char time_str[6];
-            sprintf(time_str, "%02d:%02d", info->tm_hour, info->tm_min);
+//            sprintf(time_str, "%02d:%02d", info->tm_hour, info->tm_min);
+            sprintf(time_str, "%02d:%02d", 06, 58);
             lv_label_set_text(time_label, time_str);
             lv_obj_align(time_label, LV_ALIGN_CENTER, 0, -50);
+
+            lv_label_set_text(am_label,"P\nM");
         }
 
-    if (force || last_tm.tm_wday != info->tm_wday) {
-        last_tm.tm_wday = info->tm_wday;
+        if (force || last_tm.tm_wday != info->tm_wday) {
+            last_tm.tm_wday = info->tm_wday;
 //        lv_label_set_text(day_label, get_wday_str(info->tm_wday).c_str());
-        lv_obj_align(day_label, LV_ALIGN_BOTTOM_LEFT, 40, -65);
-    }
+            lv_obj_align(day_label, LV_ALIGN_BOTTOM_LEFT, 40, -65);
+        }
 
-    if (force || last_tm.tm_mday != info->tm_mday || last_tm.tm_mon != info->tm_mon) {
-        last_tm.tm_mday = info->tm_mday;
-        last_tm.tm_mon = info->tm_mon;
+        if (force || last_tm.tm_mday != info->tm_mday || last_tm.tm_mon != info->tm_mon) {
+            last_tm.tm_mday = info->tm_mday;
+            last_tm.tm_mon = info->tm_mon;
 //        std::string date_str = get_mday_str(info->tm_mday).c_str() + std::string(" ") + get_mon_str(info->tm_mon);
 //        lv_label_set_text(date_label, date_str.c_str());
-        lv_obj_align(date_label, LV_ALIGN_BOTTOM_LEFT, 40, -20);
+            lv_obj_align(date_label, LV_ALIGN_BOTTOM_LEFT, 40, -20);
+        }
     }
-}
 
     void UITime::routine() {
         update_info();

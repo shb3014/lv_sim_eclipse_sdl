@@ -29,6 +29,7 @@ namespace UI {
         lv_obj_t *day_label;
         lv_obj_t *date_label;
         lv_obj_t *sep_line;
+        lv_obj_t *am_label;
         lv_point_t sep_line_points[2] = {{0, 0},
                                          {0, 80}};
 

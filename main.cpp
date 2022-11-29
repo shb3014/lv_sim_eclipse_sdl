@@ -46,6 +46,8 @@
 #include "thread"
 #include "mutex"
 #include "ui/tools.h"
+#include "ui/UITestError.h"
+#include "ui/UITestAging.h"
 
 /*********************
  *      DEFINES
@@ -119,12 +121,28 @@ void ui_thread() {
 //    auto ui = std::make_shared<UI::UIDoubleProgress>();
 //    auto ui = std::make_shared<UI::TuPlantDetect>();
 //    auto ui = std::make_shared<UI::UIWeather>();
-    auto ui = std::make_shared<UI::UISysInfo>();
+//    auto ui = std::make_shared<UI::UITestError>();
+    auto ui = std::make_shared<UI::UITestAging>();
     {
         std::lock_guard<std::recursive_mutex> lock(ui_mutex);
         current_ui = ui;
         ui->set_start(true);
 //        ui->update_info("partly sunny", "too_much_light.b", 2, 20, 35);
+//        std::vector<int> err_list = {1,3,5,7,2,4,76};
+//        ui->set_errors(err_list);
+//        ui->update(0, 78, "Unplug & Wait.", lv_color_make(255, 255, 0), lv_color_make(255,0,0));
+
+//        ui->update(23423, 69, 23040,"Plugin Power!.",
+//                   false ? lv_color_make(0, 0, 255) : lv_color_make(0, 255, 0),
+//                   lv_color_make(0,0,255));
+//        ui->update(0, 56, 0, "Unplug Power!", lv_color_make(255, 255, 0), lv_color_make(255, 0, 0));
+//                ui->update(0, 56, 0, "Wait!.", lv_color_make(255, 255, 0), lv_color_make(0, 0, 0));
+        std::string fail_str = std::to_string(68) + "% | Fail!";
+        ui->update(23423, 66, 0, fail_str.c_str(), lv_color_make(255, 0, 0),
+                   lv_color_make(0, 255, 0));
+//                ui->update(0, 56, 0, "Plugin Power!",
+//                           false ? lv_color_make(0, 0, 255) : lv_color_make(0, 255, 255),
+//                           lv_color_make(255, 0, 0));
     }
     vTaskDelay(500);
 //    ui->update_desc(UI::get_colored_str("Please do not shutdown Ivy",UI::palette_notice).c_str());

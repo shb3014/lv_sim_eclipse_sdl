@@ -27,6 +27,8 @@ namespace UI {
         UI_TEST,
         UI_TEXT,
         UI_TEMP_TEXT,
+        UI_TEST_ERROR,
+        UI_TEST_AGING,
 
         TU_INTRO,
         TU_TOUCH_BAR,
