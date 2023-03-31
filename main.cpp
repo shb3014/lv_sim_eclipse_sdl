@@ -24,22 +24,27 @@
 #include "lv_drivers/indev/keyboard.h"
 #include "lv_drivers/indev/mousewheel.h"
 
-#include "ui/UIWeather.h"
-#include "ui/UITime.h"
-#include "ui/UIDate.h"
-#include "ui/UIProgress.h"
-#include "ui/UIDoubleProgress.h"
-#include "ui/UIActionBox.h"
-#include "ui/UILoading.h"
-#include "ui/UIQrCode.h"
-#include "ui/UIPlantStatus.h"
-#include "ui/UITest.h"
-#include "ui/UIText.h"
-#include "ui/TutorialUI.h"
-#include "ui/UIFluid.h"
-#include "ui/UIFluidAssist.h"
-#include "ui/UISysInfo.h"
-#include "ui/UIProvTip.h"
+
+
+#include "Anim/ui/UIWeather.h"
+#include "Anim/ui/UITime.h"
+#include "Anim/ui/UIDate.h"
+#include "Anim/ui/UIProgress.h"
+#include "Anim/ui/UIDoubleProgress.h"
+#include "Anim/ui/UIActionBox.h"
+#include "Anim/ui/UILoading.h"
+#include "Anim/ui/UIQrCode.h"
+#include "Anim/ui/UIPlantStatus.h"
+#include "Anim/ui/UITest.h"
+#include "Anim/ui/UIText.h"
+#include "Anim/ui/TutorialUI.h"
+#include "Anim/ui/UIFluid.h"
+#include "Anim/ui/UIFluidAssist.h"
+#include "Anim/ui/UISysInfo.h"
+#include "Anim/ui/UITestError.h"
+#include "Anim/ui/UITestAging.h"
+
+#include "UICustom/UIProvTip.h"
 
 #include "utils/log.h"
 #include "lv_conf.h"
@@ -47,9 +52,9 @@
 #include "memory"
 #include "thread"
 #include "mutex"
-#include "ui/tools.h"
-#include "ui/UITestError.h"
-#include "ui/UITestAging.h"
+#include "Anim/ui/tools.h"
+
+#include "lv_fs_if/lv_fs_if.h"
 
 /*********************
  *      DEFINES
@@ -98,8 +103,6 @@ static int tick_thread(void *data);
  *   GLOBAL FUNCTIONS
  **********************/
 
-#include "font/AddFontRT.h"
-
 
 std::shared_ptr<UI::Base> current_ui;
 std::recursive_mutex ui_mutex;
@@ -129,7 +132,8 @@ void ui_thread() {
 //    auto ui = std::make_shared<UI::TuPlantDetect>();
 //    auto ui = std::make_shared<UI::UIWeather>();
 //    auto ui = std::make_shared<UI::UITestError>();
-    auto ui = std::make_shared<UI::UITestAging>();
+//    auto ui = std::make_shared<UI::UITestAging>();
+    auto ui = std::make_shared<UI::TuApp>();
     {
         std::lock_guard<std::recursive_mutex> lock(ui_mutex);
         current_ui = ui;
@@ -166,7 +170,9 @@ int main(int argc, char **argv) {
     /*Initialize the HAL (display, input devices, tick) for LVGL*/
     hal_init();
 
-    //CNFont::instance().lv_font_load();
+    lv_fs_if_init();
+
+    Lang::set_language(Lang::zh);
 
     current_ui = std::make_shared<UI::UIDefault>();
 

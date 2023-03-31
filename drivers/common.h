@@ -8,7 +8,7 @@
 #include "cstdint"
 #include "chrono"
 
-#define MAX_BUFFERED_PIXELS 5120
+#define MAX_BUFFERED_PIXELS 6400
 
 uint16_t **get_dma_bufs();
 

@@ -294,7 +294,6 @@ e.g. "stm32f769xx.h" or "stm32f429xx.h"*/
 /*Optionally declare custom fonts here.
  *You can use these fonts as default font too and they will be available globally.
  *E.g. #define LV_FONT_CUSTOM_DECLARE   LV_FONT_DECLARE(my_font_1) LV_FONT_DECLARE(my_font_2)*/
-//#define LV_FONT_CUSTOM_DECLARE LV_FONT_DECLARE(mi_demi_12) LV_FONT_DECLARE(mi_demi_20) LV_FONT_DECLARE(mi_demi_40) LV_FONT_DECLARE(mi_demi_120) LV_FONT_DECLARE(ba_120)
 #define LV_FONT_CUSTOM_DECLARE LV_FONT_DECLARE(ba_120) LV_FONT_DECLARE(ba_16) LV_FONT_DECLARE(ba_40) LV_FONT_DECLARE(ba_30)
 
 /*Always set a default font*/
@@ -508,3 +507,11 @@ e.g. "stm32f769xx.h" or "stm32f429xx.h"*/
 #endif /*LV_CONF_H*/
 
 #endif /*End of "Content enable"*/
+
+/*File system interface*/
+#define LV_USE_FS_IF	1
+#if LV_USE_FS_IF
+#  define LV_FS_IF_FATFS    '\0'
+#  define LV_FS_IF_PC       'F'
+#  define LV_FS_IF_POSIX    '\0'
+#endif  /*LV_USE_FS_IF*/

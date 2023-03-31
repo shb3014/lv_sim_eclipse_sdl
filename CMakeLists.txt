@@ -6,8 +6,30 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR})
 
-file(GLOB_RECURSE INCLUDES "lv_drivers/*.h" "lv_demos/*.h"  "lvgl/*.h"  "./*.h" "font/*.h" )
-file(GLOB_RECURSE SOURCES  "lv_drivers/*.c" "lv_demos/*.c"  "lvgl/*.c" "ui/*.cpp" "utils/*.cpp" "drivers/*.cpp" "text/*.c" "tool/*.cpp" "font/*.cpp")
+file(GLOB_RECURSE INCLUDES "./*.h"
+        "lv_drivers/*.h"
+        "lvgl/*.h"
+        "lv_fs_if/*.h"
+        "Anim/*.h"
+        "lib/*.h"
+        "utils/*.h"
+        "drivers/*.h"
+        "tool/*.h"
+        "UICustom/*.h")
+
+list(APPEND INCLUDES "lib/nlohmann/Njson.hpp" "tool/qrcodegen.hpp")
+
+file(GLOB_RECURSE SOURCES
+        "lv_drivers/*.c"
+        "lvgl/*.c"
+        "lv_fs_if/*.c"
+        "Anim/*.cpp"
+        "Anim/lang/embedded/*.c"
+        "lib/*.c"
+        "utils/*.cpp"
+        "drivers/*.cpp"
+        "tool/*.cpp"
+        "UICustom/*.cpp")
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin) 
 SET(CMAKE_CXX_FLAGS "-O3")
@@ -16,7 +38,7 @@ add_definitions(-DLV_SIM)
 
 find_package(SDL2 REQUIRED SDL2)
 include_directories(${SDL2_INCLUDE_DIRS})
-add_executable(main main.cpp mouse_cursor_icon.c ${SOURCES} ${INCLUDES} font/AddFontRT.h font/AddFontRT.cpp ui/UITime.cpp ui/UITime.h ui/UIDate.cpp ui/UIDate.h ui/UIDoubleProgress.cpp ui/UIDoubleProgress.h ui/UIActionBox.cpp ui/UIActionBox.h ui/UILoading.cpp ui/UILoading.h ui/UIQrCode.cpp ui/UIQrCode.h ui/UIPlantStatus.cpp ui/UIPlantStatus.h tool/sys.cpp tool/sys.h ui/UITest.cpp ui/UITest.h ui/UIText.cpp ui/UIText.h ui/Components.cpp ui/Components.h ui/UIFluid.cpp ui/UIFluid.h ui/UIFluidAssist.cpp ui/UIFluidAssist.h)
+add_executable(main main.cpp mouse_cursor_icon.c ${SOURCES} ${INCLUDES})
 add_compile_definitions(LV_CONF_INCLUDE_SIMPLE)
 target_link_libraries(main PRIVATE SDL2 )
 add_custom_target (run COMMAND ${EXECUTABLE_OUTPUT_PATH}/main)

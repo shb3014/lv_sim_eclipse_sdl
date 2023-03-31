@@ -5,7 +5,7 @@
 #include "QoiCodec.h"
 #include "utils/log.h"
 #include "common.h"
-#include "ui/tools.h"
+#include "Anim/ui/tools.h"
 
 QoiCodec::QoiCodec() {
 //    m_file_buf = (uint8_t *) heap_caps_malloc(1024 * 40, MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
