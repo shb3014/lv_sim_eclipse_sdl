@@ -130,7 +130,6 @@ namespace Lang {
 
     void Language::lang_set_style_text_font(lv_obj_t *label, lang_t lang, font_t size,
                                             lv_color_t color, lv_text_align_t align) {
-        auto font = m_font_map.find(size);
         if (lang == m_lang) {
             lv_obj_set_style_text_font(label, get_font(size), 0);
             lv_obj_set_style_text_color(label, color, 0);

@@ -69,15 +69,15 @@ namespace UI {
         {
             lv_point_t point;
             lv_indev_get_point(indev, &point);
-            if (point.x < 160)
+            if (point.x < 100)
             {
                 static_cast<Base *>(event->user_data)->input_cb(UI_INPUT_LEFT);
             }
-            else if (point.x > 160)
+            else if (point.x > 220)
             {
                 static_cast<Base *>(event->user_data)->input_cb(UI_INPUT_RIGHT);
             }
-            else if (point.y > 12)
+            else if (point.x > 100 && point.x < 220)
             {
                 static_cast<Base *>(event->user_data)->front_input_cb(true);
             }

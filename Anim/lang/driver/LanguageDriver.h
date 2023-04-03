@@ -45,6 +45,9 @@ namespace Lang {
                                       lv_color_t color = lv_color_white(),
                                       lv_text_align_t align = LV_TEXT_ALIGN_CENTER);
 
+        void lang_set_style_text_font_selector(lv_obj_t *label, lang_desc lang,
+                                                         lv_style_selector_t selector);
+
     private:
         /**
          * load language according to:

@@ -43,6 +43,7 @@
 #include "Anim/ui/UISysInfo.h"
 #include "Anim/ui/UITestError.h"
 #include "Anim/ui/UITestAging.h"
+#include "Anim/ui/UILangSelect.h"
 
 #include "UICustom/UIProvTip.h"
 
@@ -133,7 +134,8 @@ void ui_thread() {
 //    auto ui = std::make_shared<UI::UIWeather>();
 //    auto ui = std::make_shared<UI::UITestError>();
 //    auto ui = std::make_shared<UI::UITestAging>();
-    auto ui = std::make_shared<UI::TuApp>();
+//    auto ui = std::make_shared<UI::TuApp>();
+    auto ui = std::make_shared<UI::UILangSelect>();
     {
         std::lock_guard<std::recursive_mutex> lock(ui_mutex);
         current_ui = ui;
