@@ -28,8 +28,10 @@ file(GLOB_RECURSE SOURCES
         "lib/*.c"
         "utils/*.cpp"
         "drivers/*.cpp"
+        "image/*.c"
         "tool/*.cpp"
-        "UICustom/*.cpp")
+        "UICustom/*.cpp"
+        )
 
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin) 
 SET(CMAKE_CXX_FLAGS "-O3")

@@ -46,6 +46,7 @@
 #include "Anim/ui/UILangSelect.h"
 
 #include "UICustom/UIProvTip.h"
+#include "Anim/ui/UITomatoClock.h"
 
 #include "utils/log.h"
 #include "lv_conf.h"
@@ -135,7 +136,9 @@ void ui_thread() {
 //    auto ui = std::make_shared<UI::UITestError>();
 //    auto ui = std::make_shared<UI::UITestAging>();
 //    auto ui = std::make_shared<UI::TuApp>();
-    auto ui = std::make_shared<UI::UILangSelect>();
+//    auto ui = std::make_shared<UI::UILangSelect>();
+//    auto ui = std::make_shared<UI::UITomatoClock>();
+    auto ui = std::make_shared<UI::UITomatoStatistics>();
     {
         std::lock_guard<std::recursive_mutex> lock(ui_mutex);
         current_ui = ui;
