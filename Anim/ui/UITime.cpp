@@ -26,9 +26,9 @@ namespace UI {
 
         date_label = lv_label_create(m_scr);
         Lang::Language::instance().lang_set_style_text_font(date_label,
-                                                            {.zh = Lang::mi_light_font_30,
+                                                            {.zh = Lang::mi_light_font_36,
                                                              .en = Lang::ba_font_30,
-                                                             .jp = Lang::jp_font_30});
+                                                             .jp = Lang::jp_font_36});
 
         sep_line = lv_line_create(m_scr);
         lv_obj_set_style_line_color(sep_line, lv_color_make(255, 255, 255), 0);
@@ -36,18 +36,21 @@ namespace UI {
         lv_obj_set_style_line_width(sep_line, 1, 0);
         lv_obj_set_pos(sep_line, 180, 135);
 
-//        am_label = lv_label_create(m_scr);
-//        label_set_style(am_label, &ba_16);
-//        if (false) {
-//            /* hide am label if using 24H mode */
-//            lv_obj_add_flag(am_label, LV_OBJ_FLAG_HIDDEN);
-//        }
+        am_label = lv_label_create(m_scr);
+        label_set_style(am_label, &ba_16);
+
+        lv_obj_align(day_label, LV_ALIGN_BOTTOM_LEFT, 40, -65);
+        if (true) {
+            /* hide am label if using 24H mode */
+            lv_obj_add_flag(am_label, LV_OBJ_FLAG_HIDDEN);
+            lv_obj_align(day_label, LV_ALIGN_BOTTOM_LEFT, 50, -65);
+        }
     }
 
     void UITime::start_routine() {
         update_info(true);
         lv_obj_align_to(weather_anim, sep_line, LV_ALIGN_OUT_RIGHT_MID, 20, -6);
-        //lv_obj_align_to(am_label, time_label, LV_ALIGN_OUT_LEFT_MID, -10, 0);
+        lv_obj_align_to(am_label, day_label, LV_ALIGN_OUT_RIGHT_BOTTOM, 5, -5);
         Base::start_routine();
     }
 
@@ -66,12 +69,13 @@ namespace UI {
             last_tm.tm_hour = info->tm_hour;
             last_tm.tm_min = info->tm_min;
             char time_str[6];
-            int hour = info->tm_hour;
+            //int hour = info->tm_hour;
+            int hour = 8;
             int min = info->tm_min;
-            if (false) {
-                std::string am = "A\nM";
+            if (true) {
+                std::string am = "AM";
                 if (hour > 11 && hour != 24) {
-                    am = "P\nM";
+                    am = "PM";
                 }
                 if (hour == 0) {
                     hour = 12;
@@ -88,7 +92,6 @@ namespace UI {
         if (force || last_tm.tm_wday != info->tm_wday) {
             last_tm.tm_wday = info->tm_wday;
             lv_label_set_text(day_label, LANG_OPTION(Lang::ui_day, info->tm_wday).c_str());
-            lv_obj_align(day_label, LV_ALIGN_BOTTOM_LEFT, 40, -65);
         }
 
         if (force || last_tm.tm_mday != info->tm_mday || last_tm.tm_mon != info->tm_mon) {

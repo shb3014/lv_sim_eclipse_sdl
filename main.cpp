@@ -119,7 +119,7 @@ void ui_thread() {
 //    auto ui = std::make_shared<UI::TuIntro>();
 //    auto ui = std::make_shared<UI::TuTouchBar>();
 //    auto ui = std::make_shared<UI::UIDate>();
-//    auto ui = std::make_shared<UI::UITime>();
+    auto ui = std::make_shared<UI::UITime>();
 //    auto ui = std::make_shared<UI::UIFluid>();
 //    auto ui = std::make_shared<UI::TuWaterCalib>();
 //    auto ui = std::make_shared<UI::UIFluidAssist>();
@@ -138,7 +138,7 @@ void ui_thread() {
 //    auto ui = std::make_shared<UI::TuApp>();
 //    auto ui = std::make_shared<UI::UILangSelect>();
 //    auto ui = std::make_shared<UI::UITomatoClock>();
-    auto ui = std::make_shared<UI::UITomatoStatistics>();
+//    auto ui = std::make_shared<UI::UITomatoStatistics>();
     {
         std::lock_guard<std::recursive_mutex> lock(ui_mutex);
         current_ui = ui;
