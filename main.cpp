@@ -119,7 +119,7 @@ void ui_thread() {
 //    auto ui = std::make_shared<UI::TuIntro>();
 //    auto ui = std::make_shared<UI::TuTouchBar>();
 //    auto ui = std::make_shared<UI::UIDate>();
-    auto ui = std::make_shared<UI::UITime>();
+//    auto ui = std::make_shared<UI::UITime>();
 //    auto ui = std::make_shared<UI::UIFluid>();
 //    auto ui = std::make_shared<UI::TuWaterCalib>();
 //    auto ui = std::make_shared<UI::UIFluidAssist>();
@@ -129,7 +129,7 @@ void ui_thread() {
 //    auto ui = std::make_shared<UI::TuFinal>();
 //    auto ui = std::make_shared<UI::TuWater>();
 //    auto ui = std::make_shared<UI::UITest>();
-//    auto ui = std::make_shared<UI::UIProvTip>();
+    auto ui = std::make_shared<UI::UIProvTip>();
 //    auto ui = std::make_shared<UI::UIDoubleProgress>();
 //    auto ui = std::make_shared<UI::TuPlantDetect>();
 //    auto ui = std::make_shared<UI::UIWeather>();

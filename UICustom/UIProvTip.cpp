@@ -100,7 +100,7 @@ namespace UI {
                 lv_obj_align_to(m_sub_text.label, m_top_text.label, LV_ALIGN_OUT_BOTTOM_MID, 0, 10);
                 lv_obj_align_to(m_title_text.label, m_top_text.label, LV_ALIGN_TOP_MID, 0, 20);
 
-                anim_canvas_bind_asset(m_canvas, "tu/tu_tuya_1");
+                anim_canvas_bind_asset(m_canvas, "Santa-Claus3");
                 anim_canvas_update(m_canvas);
                 lv_obj_align(m_canvas, LV_ALIGN_CENTER, 0, 15);
                 auto a = anim_create(m_canvas, anim_fade, LV_OPA_TRANSP, LV_OPA_COVER, 800, 1500);
